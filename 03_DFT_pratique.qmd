@@ -1,0 +1,749 @@
+---
+jupyter: python3
+---
+
+# Illustration des sources d'erreur de la Transformée de Fourier discrète
+
+Dans le chapitre précédent, nous avons vu un ensemble de propriétés et de limitations de la transformée de Fourier, ou plus précisément de la transformée de Fourier discrète (DFT), ou de la transformée de Fourier en temps discret (TDFT). Dans ce chapitre, nous allons illustrer et mettre en évidence les limitations et ainsi montrer les pièges associés à l'utilisation de la transformée de Fourier. Dans un certain nombre de cas, les exemples sembleront d'une banale évidence. Cependant pour les plus expérimentés, faisons preuve d'humilité car il nous est arrivé (et parfois il n'y a pas si longtemps) de nous faire prendre. Pour les moins aguéris, lisez ce chapitre avec la plus grande attention, il vous permettra d'éviter de fâcheuses déconvenues.
+
+Pour illustrer l'utilisation de la transformée de Fourier discrète, nous allons étudier et analyser numériquement des filtres.
+
+## Filtre passe bas du deuxième ordre
+
+### Fonction de transfert dans le domaine fréquentiel et réponse impulsionnelle
+
+Dans le premier exemple, nous allons considérer un filtre RLC serie. Sur ce filtre, nous voulons calculer la fonction de transfert entre la tension source $V_e$ et la tension au bord de la capacitance $V_c$. Nous obtenons la fonction de transfert suivante :
+
+$$
+H = \frac{V_c}{V_e} = \frac{1}{1 + RC j\omega + LC (j\omega)^2} = \frac{1}{1 + \frac{2 m}{\omega_0} j \omega + \left(\frac{ j \omega }{ \omega_0 } \right)^2 }
+$$
+
+que nous pouvons mettre sous une forme canonique, avec $m$ le taux d'amortissement relié au facteur de qualité $Q = 1 / 2 m$ et $\omega_0$ la pulsation propre $\omega_0 = \sqrt{\frac{1}{LC}}$. Pour calculer la réponse impulsionnelle, nous préférons la forme suivante :
+
+$$
+H = \frac{ \omega_0^2 }{ \omega_0^2 + 2 m \omega_0 j\omega + (j\omega)^2 }
+$$
+
+Si nous nous plaçons dans le cas où $m<1$, dans ce cas le dénominateur a deux racines complexes conjugées. Il en vient la décomposition suivante :
+
+$$
+H = \frac{\omega_0^2}{(j\omega+m\omega_0)^2 + \omega_0(1-m^2)} = \frac{\omega_0}{\sqrt{1-m^2}} \frac{\omega_1}{(j\omega+a)^2 + \omega_1^2}
+$$
+
+avec $\omega_1^2=\omega_0^2(1-m^2)$ et $a = m \omega_0$. Dans cette dernière expression, nous retrouvons la transformée de Laplace du sinus :
+
+$$
+\mathcal{L}(\sin(\omega t) u(t)) = \frac{\omega}{s^2 + \omega^2}
+$$ 
+
+avec $u(t)$ la fonction de Heaviside. Nous retrouvons également la transformée de Laplace du décalage en fréquence : 
+
+$$
+\mathcal{L}(e^{-at}f(t)) = \mathcal{L}(f)(s+a)
+$$
+
+Nous en déduisons la réponse impulsionnelle de cette fonction de transfert :
+
+$$
+h = \frac{\omega_0}{\sqrt{1-m^2}} \exp\left(-m \omega_0 t\right) \sin\left(\omega_0\sqrt{1-m^2} t\right)
+$$
+
+Nous rappelons que par définition, la transformée de Fourier de la réponse impulsionnelle $h$ est la fonction de transfert dans le domaine fréquentiel $H = \mathcal{F}(h)$. 
+
+Sur cette première figure, nous traçons la réponse impulsionnelle d'un sinus amorti de pulsation $\omega_0 = 1000$ et un taux d'amortissement $m=0.05$. Nous retrouvons l'allure caractéristique d'un sinus amorti.
+
+```{python}
+#| fig-cap: "Réponse impulsionelle en sinus hamortie $h$."
+
+import numpy as np
+import matplotlib.pyplot as plt
+
+from numpy.fft import rfft, rfftfreq
+from smux.dft import dtft, dtft_f_max, dftfreq
+
+L = 1.0
+C = 1e-6
+R = 100.0
+w_0 = 1.0 / np.sqrt(L * C)
+m = R / 2 * np.sqrt(C / L)
+
+t_max = 0.1
+
+N = 2**8
+t = np.linspace(0.0, t_max, N)
+Te = t[1]
+f = np.linspace(0, 1/Te , len(t), endpoint=False)
+
+def h(t):
+    "impulse response function"
+    return (
+        w_0
+        / np.sqrt(1 - m**2)
+        * np.exp(-m * w_0 * t)
+        * np.sin(w_0 * np.sqrt(1 - m**2) * t)
+    )
+
+
+def H(w):
+    "Transfer function in frequency domain"
+    return 1 / (1 + (2 * m * 1.0j * w) / w_0 + (1.0j * w / w_0) ** 2)
+
+
+v_c = h(t)
+fig, axs = plt.subplots(1)
+axs.plot(t, v_c)
+axs.grid()
+```
+
+### Recouvrement de spectre
+
+La représentation en diagramme de Bode représente une fonction complexe en module et en phase, en fonction de la fréquence. L'abscisse du module est en dB ou sur une échelle logarithmique, l'abscisse de la phase est en degré ou radian et la fréquence quant à elle est sur une échelle logarithmique. Cette représentation est faite sur la figure suivante, où nous représentons la transformée de Fourier analytique, ou plus simplement dit, la fonction de transfert dans le domaine fréquentiel $H$ ainsi que la transformée de Fourier discrète (DFT) et la transformée de Fourier en temps discret (DTFT). Nous rappelons que la DFT et la FFT, à un traitement algorithmique près, sont identiques. 
+
+```{python}
+#| fig-cap: "fonction de transfére dans le domaine fréquentiel $H$."
+
+v_c = h(t)
+H_ref = H(2 * np.pi * f)
+H_dtft = dtft(v_c, t, f)
+f_fft = rfftfreq(len(v_c), Te)
+H_fft = rfft(v_c) * Te
+
+fig, axs = plt.subplots(2)
+axs[0].loglog(f, np.abs(H_ref), label="H")
+axs[0].loglog(f, np.abs(H_dtft), label="DTFT")
+axs[0].loglog(f_fft, np.abs(H_fft), label="DFT")
+axs[0].axvline(dtft_f_max(t), color="r")
+axs[0].grid()
+axs[0].legend()
+
+axs[1].semilogx(f, np.angle(H_ref), label="H")
+axs[1].semilogx(f, np.angle(H_dtft), label="DTFT")
+axs[1].semilogx(f_fft, np.angle(H_fft), label="DFT")
+axs[1].grid()
+axs[1].legend()
+```
+
+Sur cette figure, nous distinguons deux fréquences remarquables pour la DTFT. La première est la fréquence propre à $w_0=1000$ soit $f_0 \approx 159Hz$. Si nous ne sommes pas vigilents, nous pourrions donner un sens physique érroné à la deuxième. Comme nous l'avons déjà dit, la DFT intrinsèquement ne calcule pas la transformée de Fourier au delà d'une certaine fréquence maximale définie par la théorie du signal. Cette limite est représentée par la ligne verticale rouge. Au delà de cette fréquence, nous retrouvons une périodisation du spectre, due à la discrétisation en temps.
+
+De plus, même en dessous de cette fréquence maximale pour les deux transformées de Fourier discrètes, la réponse s'éloigne de la fonction de transfert dans le domaine fréquentiel à mesure que la fréquence augmente. Ce comportement est du au recouvrement de spectre et cela même si la fréquence est inférieure à la fréquence maximale imposée par la théorie du signal. En effet, nous avons vu que la discrétisation du signal avait pour conséquence de périodiser la transformée de Fourier avec une période $f_e = 1/T_e = 2 f_{max}$. De plus, la réponse dans le domaine fréquentiel n'est pas à support borné, c'est à dire que la réponse dans le domaine fréquentiel n'est pas nulle pour les fréquences supérieures à $f_{max}$.
+
+Pour nous convaincre qu'il s'agit bien d'un recouvrement de spectre et pas d'une erreur d'arrondie ou autres, nous pouvons tracer la sommation de la fonction de transfert avec la première translation ; que nous représentons sur la figure suivante :
+
+```{python}
+H_ref_1 = H(2 * np.pi * f)
+H_ref_2 = H(2 * np.pi * (f - 1/Te))
+
+fig, axs = plt.subplots(2)
+axs[0].loglog(f, np.abs(H_ref_1), label="$H(f)$")
+axs[0].loglog(f, np.abs(H_ref_2), label="$H(f-f_e)$")
+axs[0].loglog(f, np.abs(H_ref_1 + H_ref_2), label="$H(f) + H(f-f_e)$")
+axs[0].loglog(f, np.abs(H_dtft), label="DTFT")
+axs[0].grid()
+axs[0].legend()
+
+axs[1].semilogx(f, np.angle(H_ref_1), label="$H(f)$")
+axs[1].semilogx(f, np.angle(H_ref_2), label="$H(f-f_e)$")
+axs[1].semilogx(f, np.angle(H_ref_1 + H_ref_2), label="$H(f) + H(f-f_e)$")
+axs[1].semilogx(f, np.angle(H_dtft), label="DTFT")
+axs[1].grid()
+```
+
+Sur cette figure, nous traçons d'une part la fonction de transfert dans le domaine fréquentiel, ainsi que sa translation par $f_e$, puis leur somme et enfin la transformée de Fourier à temps discret.
+
+Nous retrouvons le comportement attendu, c'est à dire que la somme des deux premiers termes tend vers DTFT. Nous noterons simplement que dans le ventre à $1kHz$, il y a une différence d'amplitude. Nous rappelons que dans les faits, la DFT est la sommation de $N$ transformée de Fourier translatée. Ici, nous nous sommes limités à sommer uniquement les deux premiers.
+
+Rare sont les configurations ou la transformée de Fourier est à support fini. Quelle solution avons nous à disposition pour gagner en précision. Une solution consiste à augmenter la fréquence d'échantillonnage. En effet en augmentant cette fréquence, nous allons repousser plus haut en fréquence la première répétition de la transformée de Fourier.
+
+### Calcul de l'erreur par recouvrement de spectre
+
+Dans notre cas, nous pouvons même calculer l'erreur théorique due au recouvrement de spectre. Si nous notons $H_N$ la somme de $N$ (nombre d'échantillllons) première période (répétition) espacée de la fréquence d'échantillonnage $f_e$ 
+
+$$
+H_N(f) = \sum_{n=0}^{N-1} { H(f - n f_e) }
+$$
+
+Nous pouvons définir l'erreur par :
+
+$$
+e = {\|H_N - H\|} = {\|\sum_{n=1}^{N-1} { H(f - n f_e) }\|}
+$$
+
+Une façon de diminuer l'importance du recouvrement de spectre consiste à augmenter la fréquence d'échantillonnage. En effet, la période de répétition du spectre sera donc repoussée plus haut en fréquence.
+
+Si nous prenons comme fréquence de référence (d'étude) la fréquence maximale obtenue pour l'échantillonage temporel initial $Te=0.1s/2^8 \approx 390\mu s$ soit $f_{max} \approx 1.26kHz$. Nous rappelons que pour la configuration initiale, nous avons une fréquence d'échantillonnage deux fois supérieures à cette fréquence maximale.
+
+Sur la figure suivante, nous traçons le module de la transformée de Fourier discrète ainsi que l'erreur : d'une part, l'erreur théorique décrite ci-dessus et l'erreur obtenue par DTFT d'autre part. Nous traçons ces quantités pour différentes rations de fréquence d'échantillonnage par rapport à la fréquence maximale d'étude que nous nous sommes donnés. 
+
+```{python}
+from smux.dft import dftfreq
+
+f = dftfreq(N, Te)
+f_max = f[-1]
+
+fig, amp = plt.subplots(1)
+
+H_ref = H(2 * np.pi * f)
+
+for fe in (2 * f_max, 6 * f_max, 20 * f_max, 60 * f_max):
+    t = np.arange(0.0, t_max, 1 / fe)
+
+    v_c = h(t)
+
+    H_dtft = dtft(v_c, t, f)
+
+    lines = amp.semilogy(
+        f,
+        np.abs(H_dtft),
+        label="$DTFT(h)(f_e / f_{max} = %g)$" % (fe / f_max),
+    )
+amp.semilogy(
+    f,
+    np.abs(H_ref),
+    label="$H$" % (fe / f_max),
+)
+
+amp.grid()
+amp.legend();
+```
+
+Nous constatons que visuellement sur le module de la transformée de Fourier pour un rapport $f_e/f_{max}$ de 6, nous avons du mal à percevoir de différence avec la fonction de transfert dans le domaine fréquentiel (notre référence).
+
+
+```{python}
+from smux.dft import dftfreq
+
+def dirac_comb_ft(ft, freq, time, dtype=complex):
+    """Compute the dirac comb convol with Fourier transform
+
+    Args:
+        ft (func(freq)): The function in frequency domain
+        freq (1d-array): The frequency sample
+        fe (float): The sampling frequency
+
+    Returns: f
+    """
+
+    h = np.zeros_like(freq, dtype=dtype)
+    fe = 1.0 / time[1]
+    for i in range(min(len(time), 50)):
+        h += ft(freq - i * fe)
+    return h
+
+f = dftfreq(N, Te)
+f_max = f[-1]
+
+fig, (err_abs, err_rel) = plt.subplots(2)
+
+H_ref = H(2 * np.pi * f)
+
+for fe in (2 * f_max, 6 * f_max, 20 * f_max, 60 * f_max):
+    t = np.arange(0.0, t_max, 1 / fe)
+
+    v_c = h(t)
+
+    H_dtft = dtft(v_c, t, f)
+
+    lines = err_abs.semilogy(
+        f,
+        np.abs(H_dtft - H_ref),
+        label="$e_{abs}(f_e / f_{max} = %g)$" % (fe / f_max),
+    )
+
+    H_dis = dirac_comb_ft(lambda f: H(2 * np.pi * f), f, t)
+
+    err_abs.semilogy(
+        f,
+        np.abs(H_dis - H_ref),
+        linestyle="dashdot",
+        color=lines[0].get_color(),
+    )
+
+
+    lines = err_rel.semilogy(
+        f,
+        np.abs(H_dtft - H_ref) / np.abs(H_ref),
+        label="$e_{rel}(f_e / f_{max} = %g)$" % (fe / f_max),
+    )
+
+    H_dis = dirac_comb_ft(lambda f: H(2 * np.pi * f), f, t)
+
+    err_rel.semilogy(
+        f,
+        np.abs(H_dis - H_ref) / np.abs(H_ref),
+        linestyle="dashdot",
+        color=lines[0].get_color(),
+    )
+
+
+err_abs.grid()
+err_abs.legend()
+err_rel.grid()
+err_rel.legend();
+```
+
+En revanche, si l'on regarde les erreurs absolues ou relatives (lignes continues), on constate le gain en passant de $f_e/f_{max}$ de 2 à 6 pour lesquelles nous passons d'une erreur absolue de $10^{-2}$ a $10^{-3}$. Le deuxième constat est qu'au delà de ce facteur, il n'y a presque pas de gain en precision alors que l'erreur théorique (lignes discontinues) semble indiquer un gain possible.
+
+### Impact du fenêtrage 
+
+L'erreur résiduelle se cache dans la deuxième approximation généralement faite en traintement du signal, en particulier le fenêtrage en temps. En effet, le support de la fonction en temps doit etre fini, comme le support en frequence doit l'être pour espérer avoir une transformée de Fourier exacte. Cependant cette propriété n'est également jamais totalement respectée. Cela introduit un fenêtrage temporel. 
+
+Pour réduire l'effet de ce fenetrâge, le paramètre à faire varier est la durée d'observation de celui-ci. Sur la figure suivante, pour chaque configuration nous doublons le temps d'observation. Nous observons que très rapidement l'erreur décroit et tend vers l'erreur théorique sans jamais la rejoindre. Dans cette courbe d'erreur, nous ne prenons pas en compte l'erreur introduite par le fenêtrage. 
+
+```{python}
+fig, axs = plt.subplots()
+
+H_ref = H(2 * np.pi * f)
+
+for t_max in (0.1, 0.2, 0.4, 0.8):
+    fe = 20 * f_max
+    t = np.arange(0.0, t_max, 1 / fe)
+
+    v_c = h(t)
+
+    H_dtft = dtft(v_c, t, f)
+    lines = axs.semilogy(
+        f,
+        np.abs(H_dtft - H_ref) / np.abs(H_ref),
+        label="$e(f_e / f_{max} = %g, t_{max}=%g)$" % (fe / f_max, t_max),
+    )
+
+H_dis = dirac_comb_ft(lambda f: H(2 * np.pi * f), f, t)
+
+axs.semilogy(
+    f,
+    np.abs(H_dis - H_ref) / np.abs(H_ref),
+    linestyle="dashdot",
+    color=lines[0].get_color(),
+)
+
+axs.grid()
+axs.legend()
+```
+
+En guide de bilan sur l'erreur, nous représentons une dernière figure où nous regroupons d'une part la courbe en temps et en fréquence de la fonction de transfert pour une fréquence d'échantillonnage $f_e = 20 f_{max}$ et un temps d'observation de $t_{max}=0.4s$ (figure de gauche). Nous traçons également les fonctions enveloppe $\mathcal{E}$ de la fonction en temps sur une échelle semi-logarithmique. Ce qui nous permet de constater que nous avons un taux de décroissance de l'ordre de $10^8$, ainsi qu'une erreur relative ou absolue sur la transformée de Fourier supérieure à $10^4$.
+
+```{python}
+from smux.functions.envelope import hl_envelope
+
+t_max = 0.4
+fe = 20 * f_max
+
+t = np.arange(0.0, t_max, 1 / fe)
+
+v_c = h(t)
+
+fig, axs = plt.subplots(2, 2)
+axs[0, 0].plot(t, v_c, label="$v_c$")
+envelope = hl_envelope(v_c)
+axs[0, 0].plot(t[envelope[0]], v_c[envelope[0]], label="$\mathcal{E}_{low}(v_c)$")
+axs[0, 0].plot(t[envelope[1]], v_c[envelope[1]], label="$\mathcal{E}_{higt}(v_c)$")
+axs[0, 0].legend()
+axs[0, 0].grid()
+
+axs[0, 1].semilogy(t[envelope[0]], -v_c[envelope[0]], label="$\mathcal{E}_{low}(v_c)$")
+axs[0, 1].semilogy(t[envelope[1]], v_c[envelope[1]], label="$\mathcal{E}_{higt}(v_c)$")
+axs[0, 1].legend()
+axs[0, 1].grid()
+
+H_dtft = dtft(v_c, t, f)
+H_ref = H(2 * np.pi * f)
+
+axs[1, 0].loglog(f, np.abs(H_dtft), label="DTFT")
+axs[1, 0].loglog(f, np.abs(H_ref), label="FT")
+axs[1, 0].legend()
+axs[1, 0].grid()
+
+axs[1, 1].semilogy(
+    f,
+    np.abs(H_dtft - H_ref),
+    label="$|DTFT - FT|$",
+)
+axs[1, 1].semilogy(
+    f,
+    np.abs(H_dtft - H_ref) / np.abs(H_ref),
+    label="$|DTFT - FT| / |FT|$",
+)
+axs[1, 1].grid()
+axs[1, 1].legend()
+```
+
+
+## Filtre passe haut du premier ordre
+
+### Analyse comportementale d'un filtre passe bas du premier ordre
+
+Dans ce deuxième exemple, nous allons considérer un filtre passe haut du premier ordre. La structure de ce filtre peut sembler très proche de la première configuration. Cependant la structure propre de la fonction de transfert de ce filtre est totalement différent de celle du filtre passe bas.
+
+Sur la figure suivante, nous représentons la fonction de transfert banalisée d'un filtre passe bas du premier ordre de la forme :
+
+$$
+H_{lp}(f) = \frac{1} {1 + j f/f_c}
+$$
+
+Dans cette représentation, nous traçons la transformée de Fourier, donc avec les fréquences négatives. Nous avons une décroissante très rapide de la fonction de transfert. En effet quand la fréquence augmente d'un facteur 10, la fonction de transfert est divisée par 10. Il est d'usage de dire que nous avons une décroissance de 20db/décade.
+
+```{python}
+#| fig-cap: "Fonction de transfére d'un filtre pas base du 1-er ordre."
+import numpy as np
+import matplotlib.pylab as plt
+f_max = 1e8
+f_c = 1e6
+
+def low_pass_filter(f, f_c):
+    return 1 / (1 + 1j *f / f_c)
+
+freq = np.linspace(-f_max, f_max, 1000)
+h = low_pass_filter(freq, f_c)
+fig, axs = plt.subplots()
+axs.semilogy(freq*1e-6, np.abs(h))
+axs.axvline(f_c*1e-6, color="b")
+axs.axvline(10*f_c*1e-6, color="g")
+axs.axvline(100*f_c*1e-6, color="r")
+
+axs.grid()
+axs.set_xlabel("Frequence normalisé $f/f_c$")
+axs.set_ylabel("Fonction de transfert")
+```
+
+Ainsi quand nous cherchons à obtenir par transformée de Fourier discrète une telle fonction de transfert, il est légitime de penser que la première répétition et à fortiori les suivantes vont avoir un impact faible. Car la fonction de transfert est fortement décroissante. C'est une des conclusions de la section précédente. Ainsi avec une fréquence d'échantillonnage de $f_e = 100 f_c$, nous avons :
+
+```{python}
+#| fig-cap: "Fonction de transfére d'un filtre pas base du 1-er ordre."
+
+f_e = 100 * f_c
+
+freq = np.linspace(-f_max, f_max * 2, 1000)
+fig, axs = plt.subplots()
+axs.semilogy(freq*1e-6, np.abs(low_pass_filter(freq, f_c)), label="$\mathcal{TF}(f)")
+axs.semilogy(freq*1e-6, np.abs(low_pass_filter(freq - f_e, f_c)), label="$\mathcal{TF}(f-f_e)")
+axs.semilogy(freq*1e-6, np.abs(low_pass_filter(freq - 2 * f_e, f_c)), label="$\mathcal{TF}(f-2f_e)")
+axs.semilogy(freq*1e-6, np.abs(low_pass_filter(freq - 3 * f_e, f_c)), label="$\mathcal{TF}(f-3f_e)")
+
+axs.grid()
+axs.set_xlabel("Frequence normalisé $f/f_c$")
+axs.set_ylabel("Fonction de transfert")
+```
+
+Que nous représentons également sur une échelle logarithmique pour plus de lisibilité :
+
+```{python}
+#| fig-cap: "Fonction de transfére d'un filtre pas base du 1-er ordre."
+
+freq = np.linspace(0, f_max * 2, 1000)
+fig, axs = plt.subplots()
+axs.loglog(freq*1e-6, np.abs(low_pass_filter(freq, f_c)), label="$\mathcal{TF}(f)")
+axs.loglog(freq*1e-6, np.abs(low_pass_filter(freq - f_e, f_c)), label="$\mathcal{TF}(f-f_e)")
+axs.loglog(freq*1e-6, np.abs(low_pass_filter(freq - 2 * f_e, f_c)), label="$\mathcal{TF}(f-2f_e)")
+axs.loglog(freq*1e-6, np.abs(low_pass_filter(freq - 3 * f_e, f_c)), label="$\mathcal{TF}(f-3f_e)")
+
+axs.grid()
+axs.set_xlabel("Frequence normalisé $f/f_c$")
+axs.set_ylabel("Fonction de transfert")
+```
+
+Pour se donner un ordre de grandeur dans le cas de figure d'une filtre passe bas, on aura une erreur de l'ordre de[^errorestimation] : $e \ge \max_{0\le f \lt f_e/2}{|H_{lp}(f - f_e)|} = |H_{lp}(f_e/2 - f_e)| = 1 / |1 - jf_e/2f_c|$. Dans notre cas particulier, comme nous avons choisi $f_e = 100 f_c$, l'erreur absolue est supérieure à $0.02$ soit une erreur relative de 2%.
+
+[^errorestimation]: Pour une évaluation plus fine de l'erreur, il faudrait considérer l'ensemble des "répétitions". Cependant, comme leur contribution va diminuer avec l'ordre, il suffit (dans ce cas particulier) de ne considérer que la première répétition pour donner un ordre de grandeur.
+
+Attention il s'agit bien d'une approximation dans le cas particulier d'un filtre passe bas. Il ne faut pas généraliser cette erreur. En revanche elle permet de donner un ordre de grandeur.
+
+Maintenant quand est t-il d'une fonction passe haut ?
+
+### Analyse comportementale d'un filtre passe bas du premier ordre
+
+La fonction de transfert d'un filtre passe haut du premier ordre est de la forme : 
+
+$$
+H_{hp}(f) = \frac{jf}{f_c + jf}
+$$.
+
+Si nous traçons la fonction de transfert banalisée de ce type de filtre nous avons une représentation du type :
+
+
+```{python}
+#| fig-cap: "Fonction de transfert d'un filtre pas base du 1-er ordre."
+import numpy as np
+import matplotlib.pylab as plt
+f_max = 1e7
+f_c = 1e6
+
+def high_pass_filter(f, f_c):
+    return 1j*f / (f_c + 1j *f )
+
+freq = np.linspace(-f_max, f_max, 1000)
+h = high_pass_filter(freq, f_c)
+fig, axs = plt.subplots()
+axs.semilogy(freq*1e-6, np.abs(h))
+axs.axvline(f_c*1e-6, color="b")
+
+axs.grid()
+axs.set_xlabel("Frequence normalisé $f/f_c$")
+axs.set_ylabel("Fonction de transfert")
+```
+
+Si nous nous projetons dans le calcul de la transformée de Fourier discrète dans les mêmes conditions que précédemment énoncées, avec une échelle logarithmique pour plus de lisibilité, nous avons :
+
+```{python}
+#| fig-cap: "Fonction de transfert d'un filtre passe bas du 1-er ordre."
+f_max = 1e8
+f_e = 100 * f_c
+
+freq = np.linspace(0, f_max * 2, 1000)
+fig, axs = plt.subplots()
+axs.loglog(freq*1e-6, np.abs(high_pass_filter(freq, f_c)), label="$\mathcal{TF}(f)")
+axs.loglog(freq*1e-6, np.abs(high_pass_filter(freq - f_e, f_c)), label="$\mathcal{TF}(f-f_e)")
+axs.loglog(freq*1e-6, np.abs(high_pass_filter(freq - 2 * f_e, f_c)), label="$\mathcal{TF}(f-2f_e)")
+axs.loglog(freq*1e-6, np.abs(high_pass_filter(freq - 3 * f_e, f_c)), label="$\mathcal{TF}(f-3f_e)")
+
+axs.grid()
+axs.set_xlabel("Frequence normalisé $f/f_c$")
+axs.set_ylabel("Fonction de transfert")
+```
+
+Contrairement au cas d'un filtre passe bas ou de façon intuitive, nous pouvons conclure que la transformée de Fourier discrète permet d'approcher la transformée de Fourier car nous sommes dans une approximation raisonnable d'une transformée de Fourier à support finie. Autant dans le cas d'une transformée de Fourier discrète de type passe haut, la chose semble plus périlleuse. Cependant en pratique, il n'est pas rare de devoir l'entreprendre.
+
+### Fonction de transfert d'un filtre passe haut du premier ordre
+ 
+Un filtre passe haut peut être obtenu par une capacitance en série avec une résistance. Dans ce deuxième exemple, nous calculons la fonction de transfert entre la tension d’entre (source) et la tension au bord de la résistance. Nous obtenons la fonction de transfert suivante :
+
+$$
+H_{hp} = \frac{V_r}{V_e} = \frac{j\omega RC}{1 + j\omega RC}
+$$
+
+Nous pouvons décomposer cette fonction de transfert en une somme de fraction rationelle simple. Nous pouvons pour se faire, ajouter par exemple +1-1 et regrouper les termes.
+
+$$
+\begin{align}
+\frac{V_r}{V_e} &= \frac{j\omega RC}{1 + j\omega RC} \\
+&= 1 - 1 + \frac{j\omega RC}{1 + j\omega RC} \\
+&= 1 - \frac{1 + j\omega RC}{1 + j\omega RC} + \frac{j\omega RC}{1 + j\omega RC} \\
+&= 1 - \frac{1}{1 + j\omega RC} \\
+\end{align}
+$$
+
+En prenant la transformée de Fourier inverse, nous avons au sens de distribution :
+
+$$
+\mathcal{F}^{-1}(1) = \delta
+$$
+
+et au sens des fonctions des carrés intégrables :
+
+$$
+\mathcal{F}^{-1}(\frac{1}{1 + j\omega RC}) = \frac{1}{RC} \exp\left(-\frac{t}{RC}\right) u(t)
+$$
+
+avec $u$ la fonction echelon de Heaviside.
+
+La réponse impulsionelle du filtre RC passe haut est :
+
+$$
+h_{hp} = \delta(t) - \frac{1}{RC} \exp\left(-\frac{t}{RC}\right) u(t)
+$$
+
+Il s'agit d'une distribution qui n'a pas d'existence dans un monde à temps discret ! 
+
+```{python}
+#| fig-cap: "Réponse impulsionelle en sinus amorti $h$."
+
+import numpy as np
+import matplotlib.pyplot as plt
+
+from numpy.fft import rfft, rfftfreq
+from smux.dft import dtft, dtft_f_max, dftfreq
+from smux.functions.func import delta, heaviside
+
+C = 0.1
+R = 1.0
+tau = R * C
+
+t_max = 100*tau
+d_t = tau / 100
+
+N = int(t_max/d_t)#2**8
+t = np.linspace(0.0, t_max, N)
+Te = t[1]
+f = np.linspace(0, 1/Te , len(t), endpoint=False)
+
+def h_hp(t):
+    "impulse response function"
+    return delta(t) - 1/tau * np.exp(-t/tau) * heaviside(t)
+
+
+def H_hp(w):
+    "Transfer function in frequency domain"
+    s = 1j * w
+    return s * tau / (1 + tau * s)
+
+
+v_c = h_hp(t)
+fig, axs = plt.subplots(1)
+axs.plot(t, v_c)
+axs.grid()
+```
+
+
+```{python}
+#| fig-cap: "fonction de transfert dans le domaine fréquentiel $H$."
+
+v_c = h_hp(t)
+H_ref = H_hp(2 * np.pi * f)
+#H_dtft = dtft(v_c, t, f)
+f_fft = rfftfreq(len(v_c), Te)
+H_fft = rfft(v_c) * Te
+
+fig, axs = plt.subplots(2)
+axs[0].loglog(f, np.abs(H_ref), label="H")
+#axs[0].loglog(f, np.abs(H_dtft), label="DTFT")
+axs[0].loglog(f_fft, np.abs(H_fft), label="DFT")
+axs[0].axvline(dtft_f_max(t), color="r")
+axs[0].grid()
+axs[0].legend()
+
+axs[1].semilogx(f, np.angle(H_ref), label="H")
+#axs[1].semilogx(f, np.angle(H_dtft), label="DTFT")
+axs[1].semilogx(f_fft, np.angle(H_fft), label="DFT")
+axs[1].grid()
+axs[1].legend()
+```
+
+Nous pouvons également écrire cette relation dans le domaine temporel. Dans un premier temps, nous evaluons le courant dans la capacitance. 
+
+$$
+i_c = C \frac{d v_c}{dt} = C \frac{d}{dt}(v_e - v_r)
+$$
+
+Puis nous évaluons la tension aux bornes de la résistance :
+
+$$
+v_r = R i_r = R i_c = RC \frac{d}{dt}(v_e - v_r)
+$$
+
+Avec une approximation de type différence finie centrée (ref), nous pouvons écrire une relation suivante en posant $v_r^i = v_r(i \Delta_t)$ et $v_e^i = v_e(i \Delta_t)$:
+
+$$
+\frac{v_r^{i+1} + v_r^{i}}{2} = RC \left( \frac{v_e^{i+1} - v_e^{i}}{\Delta_t} - \frac{v_r^{i+1} - v_r^{i}}{\Delta_t} \right)
+$$
+
+Après quelques regroupements, nous obtenons la relation de récurrence suivante :
+
+$$
+v_c^{i+1} = \frac{2RC-\Delta_t}{2RC+\Delta_t} v_c^i 
++ \frac{2RC}{2RC+\Delta_t} \left( v_e^{i+1} - v_e^{i} \right)
+$$
+
+```{python}
+import numpy as np
+from smux.functions import Gaussian, TimeShift
+from smux.dft import dtft_f_min
+
+
+def solve_rc(r, c, times, y):
+    Dt = times[1] - times[0]
+    K = (2 * r * c -  Dt) / (2 * r * c + Dt)
+    Q = (2 * r * c) / (2 * r * c + Dt)
+
+    x = np.zeros_like(times)
+    for i, time in enumerate(times[:-1]):
+        x[i + 1] = K * x[i] + Q * (y((i+1)*Dt) - y(i*Dt))
+
+    return x
+
+
+def decay(x):
+    x = np.abs(x)
+    j = np.argmax(x)
+    d = x / np.max(x)
+    d[np.arange(len(d)) < j] = 1
+    return d
+
+
+def transfer_function(x, times, y, freqs):
+    Y = dtft(y, times, freqs)
+    X = dtft(x, times, freqs)
+    return X / Y
+
+
+y = TimeShift(Gaussian(2e6), 0.01)
+
+fig, axs = plt.subplots(2, 2)
+
+for k in (2, 1.5, 1.0, 0.8):
+
+    t = np.arange(int(N * k)) * Te
+    label = "$k=%g$" % (k)
+
+    x = solve_rc(R, C, t, y)
+    axs[0, 0].plot(t, x, label=label)
+
+    axs[0, 1].semilogy(t, decay(x), label=label)
+
+    H = transfer_function(x, t, y(t), f)
+
+    lines = axs[1, 0].loglog(f, np.abs(H), label=label)
+    axs[1, 0].axvline(dtft_f_min(t), color=lines[0].get_color())
+
+    Hr = H_hp(2.0*np.pi*f)
+    axs[1, 1].loglog(f, np.abs(H - Hr) / np.abs(Hr), label=label)
+
+axs[0, 0].plot(t, y(t))
+axs[0, 0].set_xlabel("Time $s$")
+axs[0, 0].grid()
+axs[0, 0].legend()
+
+axs[0, 1].set_xlabel("Time $s$")
+axs[0, 1].grid()
+axs[0, 1].legend()
+
+axs[1, 0].loglog(f, np.abs(H_hp(2.0*np.pi*f)), label="Ref")
+axs[1, 0].set_xlabel("freq $Hz$")
+axs[1, 0].grid()
+axs[1, 0].legend()
+
+axs[1, 1].set_xlabel("freq $Hz$")
+axs[1, 1].grid()
+axs[1, 1].legend()
+```
+
+L'erreur peut sembler négligeable, cependant dans un grand nombre de configuration, une précision de $2\cdot10^{-3}$ n'est pas suffisante. De plus dans cette configuration, la FFT n'apporte pas d'aide particulière.
+
+### Impact de troncature (périodicité)
+
+```{python}
+from numpy.fft import fft
+
+import numpy as np
+import matplotlib.pyplot as plt
+
+fig, axs = plt.subplots(2)
+
+N = 2**7
+t_fin = 10
+Te = t_fin / N
+fe = 1.0 / Te
+
+t_1 = np.linspace(0, t_fin, N, endpoint=False)
+t_2 = np.linspace(0, t_fin * 0.95, N, endpoint=False)
+f = np.linspace(0, 0.5 / Te, N // 2, endpoint=False)
+
+k = 3
+tau = t_fin / k
+x_1 = np.sin(2 * np.pi * k / t_fin * t_1)
+x_2 = np.sin(2 * np.pi * k / t_fin * t_2)
+# x_2 = np.sin(2 * np.pi * k * (1.05) / t_fin * t)
+
+axs[0].plot(t_1, x_1, label="$x_1=\sin(2 \pi k t / T_0)$")
+axs[0].plot(t_2, x_2, label="$x_2=\sin(2 \pi k t 1.05 / T_0)$")
+axs[0].legend()
+
+for i, (t, x) in enumerate(((t_1, x_1), (t_2, x_2))):
+    X = dtft(x, t, f)  # fft(x) / fe
+    axs[1].plot(f[:10], np.abs(X)[:10], "+", label="$DFT(x_%d)$" % (i + 1))
+axs[1].grid()
+axs[1].legend()
+```
+
+# En bref
+
+Pour une fonction de transfert qui a un gabarit de type passe bas. Si on fait un DFT (FFT) a la fréquence maximum on se retrouve avec au mininum avec deux fois le niveau "réel".
+

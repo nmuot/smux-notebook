@@ -1,0 +1,1994 @@
+
+               ------------------------------------
+               MIMETIC DISCRETIZATIONS BIBLIOGRAPHY
+               ------------------------------------
+
+                     Stripped down BibTeX file
+
+               Nicolas Robidoux and Stanly Steinberg
+
+                         March 22, 2003
+
+        --------------------IMPORTANT NOTE--------------------
+
+YOU DO NOT NEED TO MODIFY THIS FILE TO GENERATE A LATEX BIBLIOGRAPHY
+WITH BIBTEX. BibTeX ignores---that is, treats as a comment---anything
+which does not start with the "at" character ("at" marks the
+beginnings of BibTeX entries; see below).  This paragraph, for
+example, does not exist as far as BibTeX is concerned.
+
+Instructions on how to generate a bibliography from this file are
+found below.  This is quite easy provided you have LaTeX installed.
+(LaTeX is free and available for "all" operating systems, including
+Windows, Mac and Unix.)
+
+        ------------------------------------------------------
+
+Please send corrections/updates/additions/comments to
+
+"Nicolas Robidoux" <nrobidoux "at" pims.math.ca>
+
+(See comments above about "at" in .bib files.)
+
+The most current version is found at
+
+http://www.math.sfu.ca/~nrobidou/public_html/mimetic/mimetic.bib
+
+http://www.math.sfu.ca/~nrobidou/public_html/mimetic/mimetic2.bib
+
+is a richly annotated version of the same file, which is not suitable
+for creating publication ready bibliographies.
+
+Visit
+
+http://www.math.sfu.ca/~nrobidou/public_html/mimetic/mimetic.html
+
+for additional documents.
+
+----------------------------------------------------------------------
+
+1998Bossavit, 1991BossavitB, 2001HiptmairB and 1996Shashkov have
+excellent bibliographies which I hope to merge come "manana."
+
+You will also find additional relevant articles and books by searching
+the authors in the online version of Mathematical Reviews:
+
+http://www.ams.org/mathscinet
+
+(by subscription).
+
+Although the philosophy behind "geometric integration" methods for
+ODEs is fairly similar to that behind "mimetic discretizations,"
+geometric integration articles are not included here unless they
+relate directly to mimetic methods for PDEs. A geometric integration
+bibliography is found at
+
+http://www.math.ntnu.no/num/synode/bib/geom_int/geom_int.html 
+
+Also: Although articles about finite volume methods for the
+integration of hyperbolic conservation laws (e.g., CFD) probably
+should be included, this bibliography is quite sparse on this
+topic. On the other hand, the bibliography also contains related
+entries from the field of computer graphics.
+
+"Recommended" articles and books (see the NOTE fields) reflect my
+(Nicolas Robidoux) biases and weight readability and perspective more
+than historical importance and technical achievement. Note that many
+articles without a recommendation are so because I have not read them
+carefully enough to have a clear opinion. 
+
+Send preprints/reprints to
+
+Nicolas Robidoux
+PIMS, EAA Rm 120
+Simon Fraser University
+Burnaby, BC
+CANADA V5A 1S6
+
+You can also email pointers to electronic copies, which I will include
+in the bibliography itself.
+
+----------------------------------------------------------------------
+
+HOW TO GENERATE A BIBLIOGRAPHY FROM THIS FILE
+
+Put this file (call it mimetic.bib, say) in a directory.
+
+Then, copy the following \cite, \bibliography and \bibliographystyle
+commands in a latex file in the same directory (call is myfile.tex,
+say). If you want to use this bib file in addition to one, or more, of
+your own, simply replace "\bibliography{mimetic}" by
+"\bibliography{myownbibfile, mimetic}," in which case BibTeX will try
+to find entries in myownbibfile.bib, and if missing, will look in
+mimetic.bib.
+
+The following, up to \end{document}, is a complete latex file which
+will produce a formatted bibliography containing all the entries in
+this file:
+
+\documentclass[12pt]{article}
+
+\begin{document}
+
+\author{Nicolas Robidoux and Stanly Steinberg}
+
+\title{Mimetic discretizations bibliography}
+
+\maketitle
+
+\begin{itemize}
+\item[1957:]
+\cite{
+1957Whitney
+}
+\item[1966:]
+\cite{
+1966Branin
+1966Yee
+}
+\item[1976:]
+\cite{
+1976Tonti}
+\item[1977:]
+\cite{
+1977Samarskii,
+1977TontiB}
+\item[1980:]
+\cite{
+1980Nedelec
+}
+\item[1981:]
+\cite{
+1981FavorskiiSamarskiiShashkovTishkin
+}
+\item[1982:]
+\cite{
+1982SamarskiiTishkinFavorskiiShashkov,
+1982FavorskiiKorshiyaShashkovTishkin
+}
+\item[1984:]
+\cite{
+1984Kotiuga
+}
+\item[1986:]
+\cite{
+1986KreissManteuffelSwartzWendroffWhite,
+1986Nedelec
+}
+\item[1987:]
+\cite{
+1987BrezziDouglasDuranFortin,
+1987Heinrich
+}
+\item[1988:]
+\cite{
+1988Bossavit,
+1988BossavitB,
+1988HymanScovel
+}
+\item[1990:]
+\cite{
+1990Dezin
+}
+\item[1991:]
+\cite{
+1991Bossavit,
+1991BossavitB,
+1991BrezziFortin,
+1991VichnevetskyTurner
+}
+\item[1992:]
+\cite{
+1992Bossavit,
+1992BossavitB,
+1992HymanKnappScovel,
+1992Sadiku,
+1992VichnevetskyTurner
+}
+\item[1993:]
+\cite{
+1993KunzLuebbers,
+1993PalmerShapiro
+}
+\item[1995:]
+\cite{
+1995CastilloHymanShashkovSteinberg,
+1995CastilloHymanShashkovSteinbergB,
+1995Dezin,
+1995Palmer,
+1995ShashkovSteinberg
+}
+\item[1996:]
+\cite{
+1996Cessenat,
+1996JiangWuPovelli,
+1996JolyMetevierRauch,
+1996LeVeque,
+1996Robidoux,
+1996Shashkov,
+1996ShashkovSteinberg,
+1996Tonti,
+1996Weiland
+}
+\item[1997:]
+\cite{
+1997HymanShashkov,
+1997HymanShashkovB,
+1997HymanShashkovSteinberg,
+1997Imagj,
+1997Mattiussi,
+1997Robidoux
+}
+\item[1998:]
+\cite{
+1998AmmariNedelec,
+1998ArbogastDawsonKeenanWheelerYotov,
+1998Bossavit,
+1998BossavitB,
+1998HymanShashkov,
+1998HymanShashkovB,
+1998MclachlanQuispelRobidoux,
+1998MorelRobertsShashkov
+}
+\item[1999:]
+\cite{
+1999ClemensThomaWeilandVanrienen,
+1999GradinaruHiptmair,
+1999HymanShashkov,
+1999HymanShashkovB,
+1999KettunenForsmanBossavit,
+1999MclachlanQuispelRobidoux,
+1999Sinor,
+1999Steinberg,
+1999TarhasaariKettunenBossavit,
+1999TeixeiraChew,
+1999TeixeiraChewB
+}
+\item[2000:]
+\cite{
+2000Bennett,
+2000Bossavit,
+2000CaorsiFernandesRaffetto,
+2000ChardShapiro,
+2000DeHoopLager,
+2000DesbrunMeyerSchoederBarr,
+2000MargolinShashkovSmolarkiewicz,
+2000Mattiussi,
+2000MclachlanRobidoux
+}
+\item[2001:]
+\cite{
+2001BerndtLipnikovMoultonShashkov,
+2001BessonovSong,
+2001BluckWalkerOrdovas,
+2001BohnerCastillo,
+2001Bossavit,
+2001BuffaHiptmairVonpetersdorffSchwab,
+2001Buksas,
+2001CastilloHymanShashkovSteinberg,
+2001ClemensWeiland,
+2001GrossKotiuga,
+2001GrossKotiugaB,
+2001Hiptmair,
+2001HiptmairB,
+2001HiptmairC,
+2001HiptmairD,
+2001HymanCampbellShashkov,
+2001HymanMorelShashkovSteinberg,
+2001HymanShashkov,
+2001HymanShashkovSteinberg,
+2001KarasozenTsybulin,
+2001KitsonMclachlanRobidoux,
+2001KoleFiggeDeRaedt,
+2001LiskaGanzhaZenger,
+2001Marrone,
+2001Mattiussi,
+2001MeyerDesbrunSchroederBarr,
+2001MorelHallShashkov,
+2001Puska,
+2001Samarskii,
+2001Seiler,
+2001TarhasaariKettunen,
+2001Teixeira,
+2001TeixeiraB,
+2001Tonti,
+2001Vanrienen
+}
+\item[2002:]
+\cite{
+2002Arnold,
+2002DeHoopLagerJorna,
+2002EstepTavener,
+2002Hiptmair,
+2002HymanMorelShashkovSteinberg,
+2002HymanSteinberg,
+2002Mattiussi,
+2002Robidoux,
+2002RobidouxSteinberg,
+2002Steinberg
+}
+\end{itemize}
+
+
+\bibliography{mimetic} \bibliographystyle{alpha}
+
+\end{document}
+
+(Of course, if you are writing an article for a SIAM journal, you
+should use "siam" instead of "alpha," etc.)
+
+Then, issue the commands (this is for Unix)
+
+latex myfile
+
+bibtex myfile
+
+latex myfile
+
+latex myfile
+
+(You need to pass the file through latex a few times to get the
+bibliography and the keys right.)
+
+The dvi file myfile.dvi should now contain a formatted bibliography
+with the above entries.
+
+Enjoy!
+
+----------------------------------------------------------------------
+
+@BOOK{1957Whitney,
+  AUTHOR =	 {Hassler Whitney},
+  TITLE =	 {Geometric integration theory},
+  PUBLISHER =	 {Princeton University Press},
+  ADDRESS =	 {Princeton, N. J.},
+  YEAR =	 {1957},
+  PAGES =	 {xv+387},
+  MRCLASS =	 {53.0X},
+  MRNUMBER =	 {19,309c},
+  MRREVIEWER =	 {H. Samelson},
+}
+
+@InProceedings{1966Branin,
+  AUTHOR =	 {F. H. {Branin, Jr.}},
+  TITLE =	 {The algebraic-topological basis for network
+                  analogies and for vector calculus},
+  BOOKTITLE =	 {{S}ymposium on {G}eneralized {N}etworks (12--14
+                  {A}pril 1966)},
+  PAGES =	 {453--491},
+  YEAR =	 {1966},
+  ORGANIZATION = {Polytechnic Institute of Brooklyn},
+}
+
+@ARTICLE{1966Yee,
+  AUTHOR =	 {K. S. Yee},
+  TITLE =	 {Numerical Solution of Initial Boundary Value
+                  Problems Involving {M}axwell's Equations in
+                  Isotropic Media},
+  JOURNAL =	 {{I}{E}{E}{E} {T}ransactions of {A}ntennas and
+                  {P}ropagation},
+  YEAR =	 {1966},
+  VOLUME =	 {AP-14},
+  NUMBER =	 {3},
+  PAGES =	 {302--307},
+}
+
+@ARTICLE{1976Tonti,
+  AUTHOR =	 {Enzo Tonti},
+  TITLE =	 {Sulla struttura formale delle teorie fisiche},
+  JOURNAL =	 {Rend. Sem. Mat. Fis. Milano},
+  VOLUME =	 {46},
+  YEAR =	 {1976},
+  PAGES =	 {163--257 (1978)},
+  MRCLASS =	 {83.58 (02G99)},
+  MRNUMBER =	 {58 \#14974},
+  MRREVIEWER =	 {George S. Whiston},
+}
+
+@BOOK{1977Samarskii,
+  AUTHOR =	 {A. A. Samarski\u{\i}},
+  TITLE =	 {Teoriya raznostnykh skhem},
+  PUBLISHER =	 {Izdat. ``Nauka'', Moscow},
+  YEAR =	 {1977},
+  PAGES =	 {656},
+  MRCLASS =	 {65-01 (65MXX 65NXX 69.00)},
+  MRNUMBER =	 {58 \#3288},
+  MRREVIEWER =	 {M. Zlamal},
+}
+
+@ARTICLE{1977TontiB,
+  AUTHOR =	 {Enzo Tonti},
+  TITLE =	 {The reason for analogies between physical theories},
+  JOURNAL =	 {Appl. Math. Modelling},
+  VOLUME =	 {1},
+  YEAR =	 {1976/77},
+  NUMBER =	 {1},
+  PAGES =	 {37--50},
+  MRCLASS =	 {02A05 (00A25)},
+  MRNUMBER =	 {58 \#5001},
+}
+
+@ARTICLE{1980Nedelec,
+  AUTHOR =	 {J.-C. N{\'e}d{\'e}lec},
+  TITLE =	 {Mixed finite elements in ${\bf {R}}\sp{3}$},
+  JOURNAL =	 {Numer. Math.},
+  FJOURNAL =	 {Numerische Mathematik},
+  VOLUME =	 {35},
+  YEAR =	 {1980},
+  NUMBER =	 {3},
+  PAGES =	 {315--341},
+  ISSN =	 {0029-599X},
+  CODEN =	 {NUMMA7},
+  MRCLASS =	 {65N30},
+  MRNUMBER =	 {81k:65125},
+  MRREVIEWER =	 {P. G. Ciarlet},
+}
+
+@ARTICLE{1981FavorskiiSamarskiiShashkovTishkin,
+  AUTHOR =	 {A. Favorskii and A. Samarskii and Mikhail
+                  J. Shashkov and V. Tishkin},
+  TITLE =	 {Operational Finite-Difference Schemes},
+  JOURNAL =	 {Differential Equations},
+  VOLUME =	 {17},
+  YEAR =	 {1981},
+  PAGES =	 {854--862},
+}
+
+@ARTICLE{1982SamarskiiTishkinFavorskiiShashkov,
+  AUTHOR =	 {A. A. Samarski\u{\i} and V. F. Tishkin and
+                  A. P. Favorski\u{\i} and M. Yu. Shashkov},
+  TITLE =	 {Use of the support operator method for constructing
+                  difference analogues of operations of tensor
+                  analysis},
+  JOURNAL =	 {Differentsial nye Uravneniya},
+  FJOURNAL =	 {Differentsial nye Uravneniya},
+  VOLUME =	 18,
+  YEAR =	 1982,
+  NUMBER =	 7,
+  PAGES =	 {1251--1256, 1287},
+  ISSN =	 {0374-0641},
+  MRCLASS =	 {65N05},
+  MRNUMBER =	 {83k:65072},
+  MRREVIEWER =	 {Ra\u{\i} cho Lazarov},
+  NOTE =	 {English translation: Differential Equations 18
+                  (1982), no. 7, 881--885.},
+}
+
+@ARTICLE{1982FavorskiiKorshiyaShashkovTishkin,
+  AUTHOR =	 {A. Favorskii and T. Korshiya and Mikhail J. Shashkov
+                  and V. Tishkin},
+  TITLE =	 {Variational Approach to The Construction of
+                  Finite-Difference Schemes for The Diffusion
+                  Equations for Magnetic Field},
+  JOURNAL =	 {Differential Equations},
+  VOLUME =	 {18},
+  YEAR =	 {1982},
+  NUMBER =	 {7},
+  PAGES =	 {863--872}
+}
+
+@PHDTHESIS{1984Kotiuga,
+  AUTHOR =	 {P.R. Kotiuga},
+  TITLE =	 {{H}odge decompositions and computational
+                  electromagnetics},
+  SCHOOL =	 {Department of Electrical Engineering, McGill
+                  University},
+  YEAR =	 1984,
+  ADDRESS =	 {Montr\'eal},
+}
+
+@ARTICLE{1986KreissManteuffelSwartzWendroffWhite,
+  AUTHOR =	 {H.-O. Kreiss and T. A. Manteuffel and B. Swartz and
+                  B. Wendroff and A. B. White, Jr.},
+  TITLE =	 {Supra-convergent schemes on irregular grids},
+  JOURNAL =	 {Math. Comp.},
+  FJOURNAL =	 {Mathematics of Computation},
+  VOLUME =	 {47},
+  YEAR =	 {1986},
+  NUMBER =	 {176},
+  PAGES =	 {537--554},
+  ISSN =	 {0025-5718},
+  CODEN =	 {MCMPAF},
+  MRCLASS =	 {65L05 (40A30 65D25 65L10)},
+  MRNUMBER =	 {88b:65082},
+  MRREVIEWER =	 {Randall J. LeVeque},
+}
+
+@ARTICLE{1986Nedelec,
+  AUTHOR =	 {J.-C. N{\'e}d{\'e}lec},
+  TITLE =	 {A new family of mixed finite elements in ${\bf
+                  {R}}\sp 3$},
+  JOURNAL =	 {Numer. Math.},
+  FJOURNAL =	 {Numerische Mathematik},
+  VOLUME =	 {50},
+  YEAR =	 {1986},
+  NUMBER =	 {1},
+  PAGES =	 {57--81},
+  ISSN =	 {0029-599X},
+  CODEN =	 {NUMMA7},
+  MRCLASS =	 {65N30},
+  MRNUMBER =	 {88e:65145},
+}
+
+@ARTICLE{1987BrezziDouglasDuranFortin,
+  AUTHOR =	 {Franco Brezzi and Jim {Douglas, Jr.}, and Ricardo
+                  Dur{\'a}n and Michel Fortin},
+  TITLE =	 {Mixed finite elements for second order elliptic
+                  problems in three variables},
+  JOURNAL =	 {Numer. Math.},
+  FJOURNAL =	 {Numerische Mathematik},
+  VOLUME =	 {51},
+  YEAR =	 {1987},
+  NUMBER =	 {2},
+  PAGES =	 {237--250},
+  ISSN =	 {0029-599X},
+  CODEN =	 {NUMMA7},
+  MRCLASS =	 {65N30},
+  MRNUMBER =	 {88f:65190},
+  MRREVIEWER =	 {Jaroslaw Jelen},
+}
+
+@BOOK{1987Heinrich,
+  AUTHOR =	 {Bernd Heinrich},
+  TITLE =	 {Finite difference methods on irregular networks},
+  SERIES =	 {Internationale Schriftenreihe zur Numerischen
+                  Mathematik [International Series of Numerical
+                  Mathematics]},
+  VOLUME =	 {82},
+  PUBLISHER =	 {Birkh\"auser Verlag},
+  ADDRESS =	 {Basel},
+  YEAR =	 {1987},
+  PAGES =	 {206},
+  ISBN =	 {3-7643-1880-5},
+  MRCLASS =	 {65N06},
+  MRNUMBER =	 {91d:65145},
+  MRREVIEWER =	 {M. Zl{\'a}mal},
+  NOTE =	 {A generalized approach to second order elliptic
+                  problems.},
+}
+
+@INCOLLECTION{1988Bossavit,
+  AUTHOR =	 {Alain Bossavit},
+  TITLE =	 {Mixed finite elements and the complex of {W}hitney
+                  forms},
+  BOOKTITLE =	 {The mathematics of finite elements and applications,
+                  VI (Uxbridge, 1987)},
+  PAGES =	 {137--144},
+  PUBLISHER =	 {Academic Press},
+  ADDRESS =	 {London},
+  YEAR =	 {1988},
+  MRCLASS =	 {58A99 (65N30)},
+  MRNUMBER =	 {89k:58028},
+  MRREVIEWER =	 {A. P. Stone},
+}
+
+@ARTICLE{1988BossavitB,
+  AUTHOR =	 {Alain Bossavit},
+  TITLE =	 {{W}hitney forms: A new class of finite elements for
+                  three-dimensional computations in electromagnetics},
+  JOURNAL =	 {{I}{E}{E} Proc. {A}},
+  VOLUME =	 {135},
+  PAGES =	 {493--500},
+  YEAR =	 {1988},
+}
+
+@TECHREPORT{1988HymanScovel,
+  AUTHOR =	 {James M. Hyman and J. C. Scovel},
+  TITLE =	 {Deriving mimetic difference approximations to
+                  differential operators using algebraic topology},
+  INSTITUTION =	 {Los Alamos National Laboratory},
+  YEAR =	 1988,
+  PAGES =	 {iii+31},
+  ADDRESS =	 {Los Alamos, NM 87545},
+}
+
+@Book{1990Dezin,
+  AUTHOR =	 {Dezin, A. A.},
+  TITLE =	 {Mnogomernyi analiz i diskretnye modeli},
+  NOTE =	 {In Russian. With an English summary},
+  PUBLISHER =	 {``Nauka''},
+  ADDRESS =	 {Moscow},
+  YEAR =	 {1990},
+  PAGES =	 {240},
+  ISBN =	 {5-02-014208-5},
+  MRCLASS =	 {00A73 (53-02 58-02)},
+  MRNUMBER =	 {94d:00010},
+}
+
+@ARTICLE{1991Bossavit,
+  AUTHOR =	 {Alain Bossavit},
+  TITLE =	 {Differential forms and the computation of fields and
+                  forces in electromagnetism},
+  JOURNAL =	 {European J. Mech. B Fluids},
+  FJOURNAL =	 {European Journal of Mechanics. B Fluids},
+  VOLUME =	 10,
+  YEAR =	 1991,
+  NUMBER =	 5,
+  PAGES =	 {474--488},
+  ISSN =	 {0997-7546},
+  CODEN =	 {EJBFEV},
+  MRCLASS =	 {78A25 (58A10 78-08)},
+  MRNUMBER =	 {92m:78004},
+  MRREVIEWER =	 {A. P. Stone},
+}
+
+@ARTICLE{1991BossavitB,
+  AUTHOR =	 {Bossavit, Alain},
+  TITLE =	 {Mixed methods and the marriage between ``mixed''
+                  finite elements and boundary elements},
+  JOURNAL =	 {Numer. Methods Partial Differential Equations},
+  FJOURNAL =	 {Numerical Methods for Partial Differential
+                  Equations. An International Journal},
+  VOLUME =	 {7},
+  YEAR =	 {1991},
+  NUMBER =	 {4},
+  PAGES =	 {347--362},
+  ISSN =	 {0749-159X},
+  MRCLASS =	 {65N30 (65N38 78A30)},
+  MRNUMBER =	 {92h:65163},
+}
+
+@BOOK{1991BrezziFortin,
+  AUTHOR =	 {Franco Brezzi and Michel Fortin},
+  TITLE =	 {Mixed and hybrid finite element methods},
+  SERIES =	 {Springer Series in Computational Mathematics},
+  VOLUME =	 {15},
+  PUBLISHER =	 {Springer-Verlag},
+  ADDRESS =	 {New York},
+  YEAR =	 {1991},
+  PAGES =	 {x+350},
+  ISBN =	 {0-387-97582-9},
+  MRCLASS =	 {65N30 (65-02 73V05 76M10)},
+  MRNUMBER =	 {92d:65187},
+  MRREVIEWER =	 {Lubor Malina},
+}
+
+@ARTICLE{1991VichnevetskyTurner,
+  AUTHOR =	 {R. Vichnevetsky and L. H. Turner},
+  TITLE =	 {Spurious scattering from discontinuously stretching
+                  grids in computational fluid dynamics},
+  JOURNAL =	 {Appl. Numer. Math.},
+  FJOURNAL =	 {Applied Numerical Mathematics. An IMACS Journal},
+  VOLUME =	 {8},
+  YEAR =	 {1991},
+  NUMBER =	 {3},
+  PAGES =	 {289--299},
+  ISSN =	 {0168-9274},
+  CODEN =	 {ANMAEL},
+  MRCLASS =	 {76M20 (65M50)},
+  MRNUMBER =	 {92g:76061},
+}
+
+@ARTICLE{1992Bossavit,
+  AUTHOR =	 {Alain Bossavit},
+  TITLE =	 {On local computation of the force field in
+                  deformable bodies},
+  JOURNAL =	 {Applied Electromagnetics in Materials},
+  YEAR =	 {1992},
+  VOLUME =	 {2},
+  NUMBER =	 {4},
+  PAGES =	 {333--343},
+}
+
+@ARTICLE{1992BossavitB,
+  AUTHOR =	 {Alain Bossavit},
+  TITLE =	 {Edge-element Computation of The Force Field in
+                  Deformable Bodies},
+  JOURNAL =	 {{I}{E}{E}{E} Trans. Magnetics},
+  YEAR =	 {1992},
+  VOLUME =	 {28},
+  NUMBER =	 {2},
+  PAGES =	 {1263--1266},
+}
+
+@ARTICLE{1992HymanKnappScovel,
+  AUTHOR =	 {James M. Hyman and Robert J. Knapp and James
+                  C. Scovel},
+  TITLE =	 {High order finite volume approximations of
+                  differential operators on nonuniform grids},
+  NOTE =	 {Experimental mathematics: computational issues in
+                  nonlinear science (Los Alamos, NM, 1991)},
+  JOURNAL =	 {Phys. D},
+  FJOURNAL =	 {Physica D. Nonlinear Phenomena},
+  VOLUME =	 {60},
+  YEAR =	 {1992},
+  NUMBER =	 {1-4},
+  PAGES =	 {112--138},
+  ISSN =	 {0167-2789},
+  CODEN =	 {PDNPDT},
+  MRCLASS =	 {65N30},
+  MRNUMBER =	 {93i:65110},
+}
+
+@BOOK{1992Sadiku,
+  AUTHOR =	 {Matthew N.O. Sadiku},
+  TITLE =	 {Numerical Techniques in Electromagnetics},
+  PUBLISHER =	 {CRC Press},
+  YEAR =	 {1992},
+  ADDRESS =	 {Boca Raton},
+}
+
+@INPROCEEDINGS{1992VichnevetskyTurner,
+  AUTHOR =	 {R. Vichnevetsky and L.H. Turner},
+  TITLE =	 {Singular Scattering in Discontinuously Stretching
+                  Grids for the Wave Equation},
+  BOOKTITLE =	 {Advances in Computer Methods for Partial
+                  Differential Equations VII},
+  YEAR =	 {1992},
+  PAGES =	 {761--769},
+  PUBLISHER =	 {IMACS},
+}
+
+@BOOK{1993KunzLuebbers,
+  AUTHOR =	 {Karl S. Kunz and Raymond J. Luebbers},
+  TITLE =	 {The Finite Difference Time Domain Method for
+                  Electromagnetics},
+  PUBLISHER =	 {CRC Press},
+  YEAR =	 {1993},
+  ADDRESS =	 {Boca Raton},
+}
+
+@ARTICLE{1993PalmerShapiro,
+  AUTHOR =	 {Richard S. Palmer and Vadim Shapiro},
+  TITLE =	 {Chain Models of Physical Behavior for Engineering
+                  Analysis and Design},
+  JOURNAL =	 {Research in Engineering Design},
+  YEAR =	 {1993},
+  VOLUME =	 {5},
+  PAGES =	 {161--184},
+}
+
+@INPROCEEDINGS{1995CastilloHymanShashkovSteinberg,
+  AUTHOR =	 {Jose Castillo and James M. Hyman and Mikhail
+                  J. Shashkov and Stanly Steinberg},
+  TITLE =	 {High-Order Mimetic Finite Difference Methods on
+                  Nonuniform Grids},
+  BOOKTITLE =	 {ICOSAHOM-95, Proc. of the Third International
+                  Conference on Spectral and High Order Methods,
+                  Houston, Texas, 5-9 June 1995},
+  YEAR =	 {1995},
+  EDITOR =	 {A.V. Ilin and L. R. Scott},
+  PAGES =	 {347--361},
+  PUBLISHER =	 {Special Issue of Houston Journal of Mathematics},
+}
+
+@ARTICLE{1995CastilloHymanShashkovSteinbergB,
+  AUTHOR =	 {Jose Castillo and James M. Hyman and Mikhail
+                  J. Shashkov and Stanly Steinberg},
+  TITLE =	 {The Sensitivity and Accuracy of Fourth Order
+                  Finite-Difference Schemes on Nonuniform Grids in One
+                  Dimension},
+  JOURNAL =	 {Comput. Math. Appl.},
+  FJOURNAL =	 {Computers \& Mathematics with Applications. An
+                  International Journal},
+  VOLUME =	 {30},
+  YEAR =	 {1995},
+  NUMBER =	 {8},
+  PAGES =	 {41--55},
+  ISSN =	 {0898-1221},
+  CODEN =	 {CMAPDK},
+  MRCLASS =	 {65D25 (65P05)},
+  MRNUMBER =	 {96f:65025},
+}
+
+@BOOK{1995Dezin,
+  AUTHOR =	 {Aleksei A. Dezin},
+  TITLE =	 {Multidimensional analysis and discrete models},
+  NOTE =	 {Translated from the Russian by Irene Aleksanova},
+  PUBLISHER =	 {CRC Press},
+  ADDRESS =	 {Boca Raton, FL},
+  YEAR =	 {1995},
+  PAGES =	 {viii+244},
+  ISBN =	 {0-8493-9425-2},
+  MRCLASS =	 {00A73 (53-02 58-02 81P99)},
+  MRNUMBER =	 {98b:00015},
+  MRREVIEWER =	 {Jules Beckers},
+}
+
+@Article{1995Palmer,
+  AUTHOR =	 {Richard S. Palmer},
+  TITLE =	 {Chain models and finite element analysis: an
+                  executable {CHAINS} formulation of plane stress},
+  NOTE =	 {Grid generation, finite elements, and geometric
+                  design},
+  JOURNAL =	 {Comput. Aided Geom. Design},
+  FJOURNAL =	 {Computer Aided Geometric Design},
+  VOLUME =	 {12},
+  YEAR =	 {1995},
+  NUMBER =	 {7},
+  PAGES =	 {733--770},
+  ISSN =	 {0167-8396},
+  CODEN =	 {CAGDEX},
+  MRCLASS =	 {65N30 (65D17)},
+  MRNUMBER =	 {1 365 106},
+}
+
+@ARTICLE{1995ShashkovSteinberg,
+  AUTHOR =	 {Mikhail Shashkov and Stanly Steinberg},
+  TITLE =	 {Support-operator finite-difference algorithms for
+                  general elliptic problems},
+  JOURNAL =	 {J. Comput. Phys.},
+  FJOURNAL =	 {Journal of Computational Physics},
+  VOLUME =	 {118},
+  YEAR =	 {1995},
+  NUMBER =	 {1},
+  PAGES =	 {131--151},
+  ISSN =	 {0021-9991},
+  CODEN =	 {JCTPAH},
+  MRCLASS =	 {65N06},
+  MRNUMBER =	 {95m:65181},
+}
+
+@BOOK{1996Cessenat,
+  AUTHOR =	 {Michel Cessenat},
+  TITLE =	 {Mathematical methods in electromagnetism},
+  SERIES =	 {Series on Advances in Mathematics for Applied
+                  Sciences},
+  VOLUME =	 {41},
+  NOTE =	 {Linear theory and applications},
+  PUBLISHER =	 {World Scientific Publishing Co. Inc.},
+  ADDRESS =	 {River Edge, NJ},
+  YEAR =	 {1996},
+  PAGES =	 {xiv+376},
+  ISBN =	 {981-02-2467-2},
+  MRCLASS =	 {78-02 (78A25)},
+  MRNUMBER =	 {97j:78001},
+  MRREVIEWER =	 {Ll. G. Chambers},
+}
+
+@ARTICLE{1996JiangWuPovelli,
+  AUTHOR =	 {B. N. Jiang and J. Wu and L.A. Povelli},
+  TITLE =	 {The origin of spurious solutions in computational
+                  electrodynamics},
+  JOURNAL =	 {Journal of Computational Physics},
+  FJOURNAL =	 {Journal of Computational Physics},
+  VOLUME =	 {125},
+  YEAR =	 {1996},
+  PAGES =	 {104--123},
+}
+
+@ARTICLE{1996JolyMetevierRauch,
+  AUTHOR =	 {J.L. Joly and G. Metevier and J. Rauch},
+  TITLE =	 {Global solvability of the anharmonic oscillator
+                  model from nonlinear optics},
+  JOURNAL =	 {SIAM J. Math. Anal.},
+  FJOURNAL =	 {SIAM Journal on Mathematical Analysis},
+  VOLUME =	 {27},
+  YEAR =	 {1996},
+  NUMBER =	 {4},
+  PAGES =	 {905--913},
+  ISSN =	 {0036-1410},
+  CODEN =	 {SJMAAH},
+  MRCLASS =	 {78A40 (35Q60)},
+  MRNUMBER =	 {97f:78023},
+  MRREVIEWER =	 {V. H. Weston},
+}
+
+@ARTICLE{1996LeVeque,
+  AUTHOR =	 {R.J. LeVeque},
+  TITLE =	 {High-resolution Conservative Algorithms for
+                  Advection in Incompressible Flow},
+  JOURNAL =	 {SIAM J. Numer. Anal.},
+  FJOURNAL =	 {SIAM Journal on Numerical Analysis},
+  VOLUME =	 {33},
+  YEAR =	 {1996},
+  NUMBER =	 {2},
+  PAGES =	 {627--665},
+  ISSN =	 {0036-1429},
+  CODEN =	 {SJNAAM},
+  MRCLASS =	 {76M20 (65M99)},
+  MRNUMBER =	 {98b:76049},
+  MRREVIEWER =	 {Jian Guo Liu},
+}
+
+@INPROCEEDINGS{1996Robidoux,
+  AUTHOR =	 {Nicolas Robidoux},
+  TITLE =	 {A New Method of Construction of Adjoint Gradients
+                  and Divergences on Logically Rectangular Smooth
+                  Grids},
+  BOOKTITLE =	 {Finite Volumes for Complex Applications: Problems
+                  and Perspectives, First International Symposium,
+                  July 15--18, 1996, {R}ouen, {F}rance},
+  YEAR =	 1996,
+  EDITOR =	 {Benkaldoun, F. and Vilsmeier, R.},
+  PAGES =	 {261--272},
+  PUBLISHER =	 {Editions Herm\`{e}s},
+  ADDRESS =	 {Paris},
+  URL =		 {http://citeseer.nj.nec.com/468699.html or
+                  www.math.sfu.ca/~nrobidou/public_html/prints/rouen/rouen.ps.gz},
+}
+
+@BOOK{1996Shashkov,
+  AUTHOR =	 {Mikhail J. Shashkov},
+  TITLE =	 {Conservative finite-difference methods on general
+                  grids},
+  NOTE =	 {With 1 IBM-PC floppy disk (3.5 inch; HD)},
+  PUBLISHER =	 {CRC Press},
+  ADDRESS =	 {Boca Raton, FL},
+  YEAR =	 1996,
+  PAGES =	 {xviii+359},
+  ISBN =	 {0-8493-7375-1},
+  MRCLASS =	 {65M06 (65-02 65N06 76M20 76N15)},
+  MRNUMBER =	 {97m:65150},
+  MRREVIEWER =	 {Dietmar Kr{\"o}ner},
+}
+
+@ARTICLE{1996ShashkovSteinberg,
+  AUTHOR =	 {Mikhail J. Shashkov and Stanly Steinberg},
+  TITLE =	 {Solving diffusion equations with rough coefficients
+                  in rough grids},
+  JOURNAL =	 {J. Comput. Phys.},
+  FJOURNAL =	 {Journal of Computational Physics},
+  VOLUME =	 {129},
+  YEAR =	 {1996},
+  NUMBER =	 {2},
+  PAGES =	 {383--405},
+  ISSN =	 {0021-9991},
+  CODEN =	 {JCTPAH},
+  MRCLASS =	 {76M20},
+  MRNUMBER =	 {97g:76066},
+}
+
+@InCollection{1996Tonti,
+  author =	 {Enzo Tonti},
+  title =	 {On the geometrical structure of electromagnetism},
+  booktitle =	 {Gravitation, Electromagnetism and Geometrical
+                  Structures},
+  pages =	 {281--308},
+  publisher =	 {Pitagora},
+  year =	 {1996},
+  editor =	 {G. Ferraese},
+  address =	 {Bologna},
+}
+
+@ARTICLE{1996Weiland,
+  AUTHOR =	 {Thomas Weiland},
+  TITLE =	 {Time domain electromagnetic field computation with
+                  finite difference methods},
+  JOURNAL =	 {Int. J. Num. Modelling},
+  FJOURNAL =	 {International Journal of Numerical Modelling:
+                  Electronic Networks, Devices and Fields},
+  YEAR =	 {1996},
+  MONTH =	 {July/August},
+  VOLUME =	 {9},
+  NUMBER =	 {4},
+  PAGES =	 {295--319},
+}
+
+@ARTICLE{1997HymanShashkov,
+  AUTHOR =	 {James M. Hyman and Mikhail J. Shashkov},
+  TITLE =	 {Natural discretizations for the divergence,
+                  gradient, and curl on logically rectangular grids},
+  JOURNAL =	 {Comput. Math. Appl.},
+  FJOURNAL =	 {Computers \& Mathematics with Applications. An
+                  International Journal},
+  VOLUME =	 {33},
+  YEAR =	 {1997},
+  NUMBER =	 {4},
+  PAGES =	 {81--104},
+  ISSN =	 {0898-1221},
+  CODEN =	 {CMAPDK},
+  MRCLASS =	 {39A12 (39A70 65D25 65L12)},
+  MRNUMBER =	 {98i:39004},
+  MRREVIEWER =	 {Philip Huddleston},
+}
+
+@ARTICLE{1997HymanShashkovB,
+  AUTHOR =	 {James M. Hyman and Mikhail J. Shashkov},
+  TITLE =	 {Adjoint operators for the natural discretizations of
+                  the divergence, gradient and curl on logically
+                  rectangular grids},
+  JOURNAL =	 {Appl. Numer. Math.},
+  FJOURNAL =	 {Applied Numerical Mathematics. An IMACS Journal},
+  VOLUME =	 {25},
+  YEAR =	 {1997},
+  NUMBER =	 {4},
+  PAGES =	 {413--442},
+  ISSN =	 {0168-9274},
+  CODEN =	 {ANMAEL},
+  MRCLASS =	 {39A12 (65C20 65N06)},
+  MRNUMBER =	 {99c:39018},
+  MRREVIEWER =	 {Sui Yang Chen},
+}
+
+@ARTICLE{1997HymanShashkovSteinberg,
+  AUTHOR =	 {James M. Hyman and Mikhail J. Shashkov and Stanly
+                  Steinberg},
+  TITLE =	 {The numerical solution of diffusion problems in
+                  strongly heterogeneous non-isotropic materials},
+  JOURNAL =	 {J. Comput. Phys.},
+  FJOURNAL =	 {Journal of Computational Physics},
+  VOLUME =	 {132},
+  YEAR =	 {1997},
+  NUMBER =	 {1},
+  PAGES =	 {130--148},
+  ISSN =	 {0021-9991},
+  CODEN =	 {JCTPAH},
+  MRCLASS =	 {65N06 (76M20 80-08)},
+  MRNUMBER =	 {98a:65151},
+  MRREVIEWER =	 {Leonid K. Antanovski{\u\i}},
+}
+
+@UNPUBLISHED{1997Imagj,
+  AUTHOR =	 {{I}mage{J} group},
+  TITLE =	 {{I}mage{J}: {I}mage {P}rocessing in {J}ava},
+  URL =		 {http://rsb.info.nih.gov/ij/},
+}
+
+@ARTICLE{1997Mattiussi,
+  AUTHOR =	 {Claudio Mattiussi},
+  TITLE =	 {An analysis of finite volume, finite element, and
+                  finite difference methods using some concepts from
+                  algebraic topology},
+  JOURNAL =	 {J. Comput. Phys.},
+  FJOURNAL =	 {Journal of Computational Physics},
+  VOLUME =	 {133},
+  YEAR =	 {1997},
+  NUMBER =	 {2},
+  PAGES =	 {289--309},
+  ISSN =	 {0021-9991},
+  CODEN =	 {JCTPAH},
+  MRCLASS =	 {65M60 (65N30)},
+  MRNUMBER =	 {1 447 090},
+}
+
+@TECHREPORT{1997Robidoux,
+  AUTHOR =	 {Nicolas Robidoux},
+  TITLE =	 {Natural Finite volume Discretizations of the
+                  Gradient, Divergence, Laplacian, Diffusion tensor
+                  and Advective Term on Grids with Quadrilateral
+                  Cells},
+  URL =		 "citeseer.nj.nec.com/robidoux97natural.html",
+  YEAR =	 1997,
+  PAGES =	 83,
+  INSTITUTION =	 {CiteSeer ({N}{E}{C} Research Index)},
+  NOTE =	 {Unfinished thesis draft.},
+  URL =		 {http://citeseer.nj.nec.com/robidoux97natural.html or
+                  http://www.math.sfu.ca/~nrobidou/public_html/prints/oldthesis/oldthes.ps},
+}
+
+@INCOLLECTION{1998AmmariNedelec,
+  AUTHOR =	 {Habib Ammari and Jean-Claude N{\'e}d{\'e}lec},
+  TITLE =	 {Couplage \'el\'ements finis/\'equations int\'egrales
+                  pour la r\'esolution des \'equations de {M}axwell en
+                  milieu h\'et\'erog\`ene},
+  BOOKTITLE =	 {\'Equations aux d\'eriv\'ees partielles et
+                  applications},
+  PAGES =	 {19--33},
+  PUBLISHER =	 {Gauthier-Villars},
+  ADDRESS =	 {\'Ed. Sci. M\'ed. Elsevier, Paris},
+  YEAR =	 {1998},
+  MRCLASS =	 {65N30 (35Q60 45L05 78-08 78A25)},
+  MRNUMBER =	 {99i:65122},
+  MRREVIEWER =	 {P. Rochus},
+}
+
+@ARTICLE{1998ArbogastDawsonKeenanWheelerYotov,
+  AUTHOR =	 {Todd Arbogast and Clint N. Dawson and Philip
+                  T. Keenan and Mary F. Wheeler and Ivan Yotov},
+  TITLE =	 {Enhanced cell-centered finite differences for
+                  elliptic equations on general geometry},
+  JOURNAL =	 {SIAM J. Sci. Comput.},
+  FJOURNAL =	 {SIAM Journal on Scientific Computing},
+  VOLUME =	 {19},
+  YEAR =	 {1998},
+  NUMBER =	 {2},
+  PAGES =	 {404--425 (electronic)},
+  ISSN =	 {1095-7197},
+  MRCLASS =	 {65N30},
+  MRNUMBER =	 {99j:65193},
+  MRREVIEWER =	 {S. Galanis},
+}
+
+@BOOK{1998Bossavit,
+  AUTHOR =	 {Alain Bossavit},
+  TITLE =	 {Computational electromagnetism},
+  PUBLISHER =	 {Academic Press Inc.},
+  ADDRESS =	 {San Diego, CA},
+  YEAR =	 {1998},
+  PAGES =	 {xx+352},
+  ISBN =	 {0-12-118710-1},
+  MRCLASS =	 {78-08 (65N99 78-02 78A30)},
+  MRNUMBER =	 {99m:78001},
+  MRREVIEWER =	 {Pierre Hillion},
+}
+
+@Article{1998BossavitB,
+  author =	 {Alain Bossavit},
+  TITLE =	 {How weak is the ``weak solution'' in finite element
+                  methods?},
+  journal =	 {{I}{E}{E}{E} Trans. Magnetics},
+  year =	 1998,
+  volume =	 34,
+  pages =	 {2429--2432},
+}
+
+@ARTICLE{1998HymanShashkov,
+  AUTHOR =	 {James M. Hyman and Mikhail J. Shashkov},
+  TITLE =	 {The Approximation of Boundary Conditions for Mimetic
+                  Finite Difference Methods},
+  JOURNAL =	 {Computers \& Mathematics with Applications},
+  VOLUME =	 {36},
+  YEAR =	 {1998},
+  PAGES =	 {79--99},
+}
+
+@INPROCEEDINGS{1998HymanShashkovB,
+  AUTHOR =	 {James M. Hyman and Mikhail J. Shashkov},
+  TITLE =	 {Mimetic discretizations for {M}axwell's equations
+                  and equations of magnetic diffusion},
+  BOOKTITLE =	 {Proc. of the Fourth International Conference on
+                  Mathematical and Numerical Aspects of Wave
+                  Propagation, Golden, Colorado, June 1-5, 1998},
+  YEAR =	 {1998},
+  EDITOR =	 {J. A. DeSanto},
+  PAGES =	 {561--563},
+  PUBLISHER =	 {SIAM},
+}
+
+@ARTICLE{1998MclachlanQuispelRobidoux,
+  AUTHOR =	 {Robert I. McLachlan and G. R. W. Quispel and Nicolas
+                  Robidoux},
+  TITLE =	 {Unified approach to {H}amiltonian systems, {P}oisson
+                  systems, gradient systems, and systems with
+                  {L}yapunov functions or first integrals},
+  JOURNAL =	 {Phys. Rev. Lett.},
+  FJOURNAL =	 {Physical Review Letters},
+  VOLUME =	 {81},
+  YEAR =	 {1998},
+  NUMBER =	 {12},
+  PAGES =	 {2399--2403},
+  ISSN =	 {0031-9007},
+  CODEN =	 {PRLTAO},
+  MRCLASS =	 {58F05 (34A34)},
+  MRNUMBER =	 {99f:58079},
+  URL =		 {http://www.massey.ac.nz/~rmclachl//prl98.pdf},
+}
+
+@ARTICLE{1998MorelRobertsShashkov,
+  AUTHOR =	 {J. E. Morel and R. M. Roberts and Mikhail
+                  J. Shashkov},
+  TITLE =	 {A Local Support-Operators Diffusion Discretization
+                  Scheme},
+  JOURNAL =	 {Journal of Computational Physics},
+  VOLUME =	 {144},
+  YEAR =	 {1998},
+  PAGES =	 {17--51},
+}
+
+@ARTICLE{1999ClemensThomaWeilandVanrienen,
+  AUTHOR =	 {Markus Clemens and Peter Thoma and Thomas Weiland
+                  and Ursula van Rienen},
+  TITLE =	 {Computational electromagnetic-field calculation with
+                  the finite-integration method},
+  JOURNAL =	 {Surv. Math. Ind.},
+  FJOURNAL =	 {Surveys on Mathematics for Industry},
+  YEAR =	 {1999},
+  VOLUME =	 {8},
+  PAGES =	 {213--232},
+}
+
+@ARTICLE{1999GradinaruHiptmair,
+  AUTHOR =	 {V. Gradinaru and R. Hiptmair},
+  TITLE =	 {{W}hitney elements on pyramids},
+  JOURNAL =	 {Electron. Trans. Numer. Anal.},
+  FJOURNAL =	 {Electronic Transactions on Numerical Analysis},
+  VOLUME =	 {8},
+  YEAR =	 {1999},
+  PAGES =	 {154--168 (electronic)},
+  ISSN =	 {1068-9613},
+  MRCLASS =	 {65N30 (65D15 78M10)},
+  MRNUMBER =	 {2001f:65134},
+  MRREVIEWER =	 {Do Young Kwak},
+}
+
+@ARTICLE{1999HymanShashkov,
+  AUTHOR =	 {James M. Hyman and Mikhail J. Shashkov},
+  TITLE =	 {The orthogonal decomposition theorems for mimetic
+                  finite difference methods},
+  JOURNAL =	 {SIAM J. Numer. Anal.},
+  FJOURNAL =	 {SIAM Journal on Numerical Analysis},
+  VOLUME =	 {36},
+  YEAR =	 {1999},
+  NUMBER =	 {3},
+  PAGES =	 {788--818 (electronic)},
+  ISSN =	 {1095-7170},
+  MRCLASS =	 {65N06},
+  MRNUMBER =	 {2000c:65094},
+  MRREVIEWER =	 {Patrick M. Knupp},
+}
+
+@ARTICLE{1999HymanShashkovB,
+  AUTHOR =	 {James M. Hyman and Mikhail J. Shashkov},
+  TITLE =	 {Mimetic discretizations for {M}axwell's equations},
+  JOURNAL =	 {J. Comput. Phys.},
+  FJOURNAL =	 {Journal of Computational Physics},
+  VOLUME =	 {151},
+  YEAR =	 {1999},
+  NUMBER =	 {2},
+  PAGES =	 {881--909},
+  ISSN =	 {0021-9991},
+  CODEN =	 {JCTPAH},
+  MRCLASS =	 {78M10},
+  MRNUMBER =	 {2000a:78038},
+}
+
+@ARTICLE{1999KettunenForsmanBossavit,
+  AUTHOR =	 {Lauri Kettunen and Kimmo Forsman and Alain Bossavit},
+  TITLE =	 {Gauging in {W}hitney spaces},
+  JOURNAL =	 {{I}{E}{E}{E} Trans. Magnetics},
+  YEAR =	 {1999},
+  VOLUME =	 {35},
+  NUMBER =	 {3},
+  PAGES =	 {1466--1469},
+  MONTH =	 {May}
+}
+
+@ARTICLE{1999MclachlanQuispelRobidoux,
+  AUTHOR =	 {Robert I. McLachlan and G. R. W. Quispel and Nicolas
+                  Robidoux},
+  TITLE =	 {Geometric integration using discrete gradients},
+  JOURNAL =	 {R. Soc. Lond. Philos. Trans. Ser. A
+                  Math. Phys. Eng. Sci.},
+  FJOURNAL =	 {The Royal Society of London. Philosophical
+                  Transactions. Series A. Mathematical, Physical and
+                  Engineering Sciences},
+  VOLUME =	 {357},
+  YEAR =	 {1999},
+  NUMBER =	 {1754},
+  PAGES =	 {1021--1045},
+  ISSN =	 {1364-503X},
+  MRCLASS =	 {34A45 (37M15 65L99 70-08)},
+  MRNUMBER =	 {2000f:34021},
+  MRREVIEWER =	 {Steve Shkoller},
+  URL =
+                  {http://citeseer.nj.nec.com/mclachlan98geometric.html},
+}
+
+@MISC{1999Sinor,
+  AUTHOR =	 {M. Sinor},
+  TITLE =	 {Simulation and visualization of elastodynamical
+                  waves in general nonhomogeneous matter},
+  HOWPUBLISHED = {{\tt
+                  http://www-troja.fjfi.cvut.cz/\~{}sinor/r/lisa}},
+  YEAR =	 {1999},
+  URL =		 {http://www-troja.fjfi.cvut.cz/~sinor/r/lisa},
+}
+
+@INPROCEEDINGS{1999Steinberg,
+  AUTHOR =	 {S. Steinberg},
+  TITLE =	 {The Accuracy of Numerical Models For Continuum
+                  Problems},
+  BOOKTITLE =	 {Error Control and Adaptivity in Scientific
+                  Computing},
+  YEAR =	 {1999},
+  EDITOR =	 {H. Bulgak and C. Zenger},
+  PAGES =	 {299-323},
+  PUBLISHER =	 {NATO Science Series},
+  NOTE =	 {Series C: Mathematical and Physical Sciences, 536},
+}
+
+@ARTICLE{1999TarhasaariKettunenBossavit,
+  AUTHOR =	 {T. Tarhasaari and L. Kettunen and Alain Bossavit},
+  TITLE =	 {Some realizations of a discrete {H}odge operator: A
+                  reinterpretation of finite element techniques},
+  JOURNAL =	 {{I}{E}{E}{E} Trans. Magn.},
+  VOLUME =	 35,
+  PAGES =	 {1494--1497},
+  YEAR =	 1999,
+}
+
+@ARTICLE{1999TeixeiraChew,
+  AUTHOR =	 {F. L. Teixeira and W. C. Chew},
+  TITLE =	 {{Differential forms, metrics, and the reflectionless
+                  absorption of electromagnetic waves}},
+  JOURNAL =	 {J. Electromagn. Waves Applicat.},
+  VOLUME =	 13,
+  NUMBER =	 5,
+  PAGES =	 {665--686},
+  YEAR =	 1999,
+}
+
+@ARTICLE{1999TeixeiraChewB,
+  AUTHOR =	 {F. L. Teixeira and W. C. Chew},
+  TITLE =	 {Lattice electromagnetic theory from a topological
+                  viewpoint},
+  JOURNAL =	 {J. Math. Phys.},
+  FJOURNAL =	 {Journal of Mathematical Physics},
+  VOLUME =	 {40},
+  YEAR =	 {1999},
+  NUMBER =	 {1},
+  PAGES =	 {169--187},
+  ISSN =	 {0022-2488},
+  CODEN =	 {JMAPAQ},
+  MRCLASS =	 {78A25 (58A10)},
+  MRNUMBER =	 {2001a:78013}
+}
+
+@PHDTHESIS{2000Bennett,
+  AUTHOR =	 {Paul M. Bennett},
+  TITLE =	 {Parallel Numerical Integration of Maxwell's
+                  Full-Vector Equations in Nonlinear Focusing Media},
+  SCHOOL =	 {University of New Mexico},
+  ADDRESS =	 {Albuquerque, NM},
+  YEAR =	 2000,
+}
+
+@INCOLLECTION{2000Bossavit,
+  AUTHOR =	 {Alain Bossavit},
+  TITLE =	 {The discrete {H}odge operator in electromagnetic
+                  wave propagation problems},
+  BOOKTITLE =	 {Mathematical and numerical aspects of wave
+                  propagation (Santiago de Compostela, 2000)},
+  PAGES =	 {753--759},
+  PUBLISHER =	 {SIAM},
+  ADDRESS =	 {Philadelphia, PA},
+  YEAR =	 {2000},
+  MRCLASS =	 {78M20 (35Q60 65N22)},
+  MRNUMBER =	 {1 785 982}
+}
+
+@ARTICLE{2000CaorsiFernandesRaffetto,
+  AUTHOR =	 {Salvatore Caorsi and Paolo Fernandes and Mirco
+                  Raffetto},
+  TITLE =	 {On the convergence of {G}alerkin finite element
+                  approximations of electromagnetic eigenproblems},
+  JOURNAL =	 {SIAM J. Numer. Anal.},
+  FJOURNAL =	 {SIAM Journal on Numerical Analysis},
+  VOLUME =	 {38},
+  YEAR =	 {2000},
+  NUMBER =	 {2},
+  PAGES =	 {580--607 (electronic)},
+  ISSN =	 {1095-7170},
+  MRCLASS =	 {65N25 (65N30 78M10)},
+  MRNUMBER =	 {2001e:65172},
+  MRREVIEWER =	 {Ma{\l}gorzata Peszy{\'n}ska},
+}
+
+@ARTICLE{2000ChardShapiro,
+  AUTHOR =	 {Jeffrey A. Chard and Vadim Shapiro},
+  TITLE =	 {A multivector data structure for differential forms
+                  and equations},
+  JOURNAL =	 {Math. Comput. Simulation},
+  FJOURNAL =	 {Mathematics and Computers in Simulation},
+  VOLUME =	 {54},
+  YEAR =	 {2000},
+  NUMBER =	 {1-3},
+  PAGES =	 {33--64},
+  ISSN =	 {0378-4754},
+  CODEN =	 {MCSIDR},
+  MRCLASS =	 {65Y20 (68W30)},
+  MRNUMBER =	 {2001j:65204},
+}
+
+@ARTICLE{2000DeHoopLager,
+  AUTHOR =	 {Adrianus T. de Hoop and Ioan E. Lager},
+  TITLE =	 {Domain-Integrated Field Approach to static magnetic
+                  field computation---Application to some
+                  two-dimensional configurations},
+  JOURNAL =	 {{I}{E}{E}{E} Trans. Magnetics},
+  YEAR =	 {2000},
+  VOLUME =	 {36},
+  NUMBER =	 {4},
+  PAGES =	 {654--658}
+}
+
+@ARTICLE{2000DesbrunMeyerSchoederBarr,
+  AUTHOR =	 {Mathieu Desbrun and Mark Meyer and Peter Schroeder
+                  and Alan H. Barr},
+  TITLE =	 {Anisotropic Feature-Preserving Denoising of
+                  Bivariate Data},
+  JOURNAL =	 {Graphics Interface 2000},
+  YEAR =	 {2000},
+  PAGES =	 {00--00},
+}
+
+@ARTICLE{2000MargolinShashkovSmolarkiewicz,
+  AUTHOR =	 {L. Margolin and Mikhail J. Shashkov and
+                  P. Smolarkiewicz},
+  TITLE =	 {A Discrete Operator Calculus for Finite Difference
+                  Approximations},
+  JOURNAL =	 {Comput. Methods Appl. Mech. Engrg.},
+  VOLUME =	 {187},
+  YEAR =	 {2000},
+  PAGES =	 {365--383},
+}
+
+@ARTICLE{2000Mattiussi,
+  AUTHOR =	 {Claudio Mattiussi},
+  TITLE =	 {The finite volume, finite element, and finite
+                  difference methods as numerical methods for physical
+                  field problems},
+  JOURNAL =	 {Advances in Imaging and Electron Physics},
+  VOLUME =	 {113},
+  YEAR =	 {2000},
+  PAGES =	 {1--146},
+}
+
+@INCOLLECTION{2000MclachlanRobidoux,
+  AUTHOR =	 {Robert I. McLachlan and Nicolas Robidoux},
+  TITLE =	 {Antisymmetry, pseudospectral methods, and
+                  conservative {P}{D}{E}s},
+  BOOKTITLE =	 {International Conference on Differential Equations,
+                  Vol. 1, 2 (Berlin, 1999)},
+  PAGES =	 {994--999},
+  PUBLISHER =	 {World Sci. Publishing},
+  ADDRESS =	 {River Edge, NJ},
+  YEAR =	 {2000},
+  MRCLASS =	 {37K05 (35L65)},
+  MRNUMBER =	 {1 870 274},
+  URL =		 {http://citeseer.nj.nec.com/498930.html},
+}
+
+@ARTICLE{2001BerndtLipnikovMoultonShashkov,
+  AUTHOR =	 {Markus Berndt and Konstantin Lipnikov and J. David
+                  Moulton and Mikhail J. Shashkov},
+  TITLE =	 {Convergence of mimetic finite difference
+                  discretizations of the diffusion equation},
+  JOURNAL =	 {East-West J. Numer. Math.},
+  FJOURNAL =	 {East-West Journal of Numerical Mathematics},
+  VOLUME =	 {9},
+  YEAR =	 {2001},
+  NUMBER =	 {4},
+  PAGES =	 {265--284},
+  ISSN =	 {0928-0200},
+  MRCLASS =	 {65N06 (65N30)},
+  MRNUMBER =	 {2003a:65085},
+  MRREVIEWER =	 {Hans-Peter Helfrich},
+}
+
+@ARTICLE{2001BessonovSong,
+  AUTHOR =	 {N.M. Bessonov and D.J. Song},
+  TITLE =	 {Application of vector calculus to numerical
+                  simulation of continuum mechanics problems},
+  JOURNAL =	 {Journal of Computational Physics},
+  VOLUME =	 {167},
+  YEAR =	 {2001},
+  PAGES =	 {22--38},
+}
+
+@UNPUBLISHED{2001BluckWalkerOrdovas,
+  AUTHOR =	 {M. J. Bluck and Simon P. Walker and Roland Ordovas},
+  TITLE =	 {Time Domain Finite Element Methods for EM Modelling},
+  BOOKTITLE =	 {European Congress on Computational Methods in
+                  Applied Sciences and Engineering},
+  YEAR =	 {2001},
+  NOTE =	 {Preprint: See {\tt
+                  http://www.me.ic.ac.uk/mechanics/staff/mjb.html}},
+  URL =		 {http://www.me.ic.ac.uk/mechanics/staff/mjb.html},
+}
+
+@ARTICLE{2001BohnerCastillo,
+  AUTHOR =	 {M. Bohner and Jose Castillo},
+  TITLE =	 {Mimetic methods on measure chains},
+  JOURNAL =	 {Comput. Math. Appl.},
+  FJOURNAL =	 {Computers \& Mathematics with Applications. An
+                  International Journal},
+  VOLUME =	 {42},
+  YEAR =	 {2001},
+  NUMBER =	 {3-5},
+  PAGES =	 {705--710},
+  ISSN =	 {0898-1221},
+  CODEN =	 {CMAPDK},
+  MRCLASS =	 {34A99 (65Q05)},
+  MRNUMBER =	 {2002d:34021},
+  MRREVIEWER =	 {E. Thandapani},
+  NOTE =	 {Advances in difference equations, III.},
+}
+
+@INCOLLECTION{2001Bossavit,
+  AUTHOR =	 {Alain Bossavit},
+  TITLE =	 {`{G}eneralized finite differences' in computational
+                  electromagnetics},
+  BOOKTITLE =	 {Geometric Methods in Computational Electromagnetics,
+                  {P}{I}{E}{R} 32},
+  EDITOR =	 {F. L. Teixeira},
+  PUBLISHER =	 {EMW Publishing},
+  ADDRESS =	 {Cambridge, Mass.},
+  PAGES =	 {45--64},
+  YEAR =	 2001,
+  CROSSREF =	 {2001Teixeira},
+}
+
+@TECHREPORT{2001BuffaHiptmairVonpetersdorffSchwab,
+  AUTHOR =	 {A. Buffa and R. Hiptmair and T. von Petersdorff and
+                  C. Schwab},
+  TITLE =	 {Boundary Element Methods for Maxwell Equations in
+                  Lipschitz Domains},
+  INSTITUTION =	 {Department of Mathematics, ETH},
+  YEAR =	 {2001},
+  NUMBER =	 {2001--05},
+  ADDRESS =	 {Zurich, Switzerland},
+  MONTHY =	 {July},
+}
+
+@INCOLLECTION{2001Buksas,
+  AUTHOR =	 {M. W. Buksas},
+  TITLE =	 {Implementing the Perfectly Matched Layer Absorbing
+                  Boundary Condition with Mimetic Differencing
+                  Schemes},
+  BOOKTITLE =	 {Geometric Methods in Computational Electromagnetics,
+                  {P}{I}{E}{R} 32},
+  EDITOR =	 {F. L. Teixeira},
+  PUBLISHER =	 {EMW Publishing},
+  ADDRESS =	 {Cambridge, Mass.},
+  PAGES =	 {383--411},
+  YEAR =	 2001,
+  CROSSREF =	 {2001Teixeira},
+}
+
+@ARTICLE{2001CastilloHymanShashkovSteinberg,
+  AUTHOR =	 {Jos\'{e} Castillo and James M. Hyman and Mikhail
+                  J. Shashkov and Stanly Steinberg},
+  TITLE =	 {Fourth- and sixth-order conservative finite
+                  difference approximations of the divergence and
+                  gradient},
+  JOURNAL =	 {Appl. Numer. Math.},
+  FJOURNAL =	 {Applied Numerical Mathematics. An IMACS Journal},
+  VOLUME =	 {37},
+  YEAR =	 {2001},
+  NUMBER =	 {1-2},
+  PAGES =	 {171--187},
+  ISSN =	 {0168-9274},
+  CODEN =	 {ANMAEL},
+  MRCLASS =	 {65D25},
+  MRNUMBER =	 {2002f:65030},
+  MRREVIEWER =	 {Mu Sheng Wei},
+}
+
+@INCOLLECTION{2001ClemensWeiland,
+  AUTHOR =	 {Markus Clemens and Thomas Weiland},
+  TITLE =	 {Discrete electromagnetism with the {F}inite
+                  {I}ntegration {T}echnique},
+  BOOKTITLE =	 {Geometric Methods in Computational Electromagnetics,
+                  {P}{I}{E}{R} 32},
+  EDITOR =	 {F. L. Teixeira},
+  PUBLISHER =	 {EMW Publishing},
+  ADDRESS =	 {Cambridge, Mass.},
+  PAGES =	 {65--87},
+  YEAR =	 2001,
+  CROSSREF =	 {2001Teixeira},
+}
+
+@INCOLLECTION{2001GrossKotiuga,
+  AUTHOR =	 {P. W. Gross and P. R. Kotiuga},
+  TITLE =	 {{Data structures for geometric and topological
+                  aspects of finite element algorithms}},
+  BOOKTITLE =	 {Geometric Methods in Computational Electromagnetics,
+                  {P}{I}{E}{R} 32},
+  EDITOR =	 {F. L. Teixeira},
+  PUBLISHER =	 {EMW Publishing},
+  ADDRESS =	 {Cambridge, Mass.},
+  PAGES =	 {151--169},
+  YEAR =	 2001,
+  CROSSREF =	 {2001Teixeira},
+}
+
+@INCOLLECTION{2001GrossKotiugaB,
+  AUTHOR =	 {P.W. Gross and P. R. Kotiuga},
+  TITLE =	 {Finite Element-Based Algorithms to Make Cuts for
+                  Magnetic Scalar Potentials: Topological Constraints
+                  and Computational Complexity},
+  BOOKTITLE =	 {Geometric Methods in Computational Electromagnetics,
+                  {P}{I}{E}{R} 32},
+  EDITOR =	 {F. L. Teixeira},
+  PUBLISHER =	 {EMW Publishing},
+  ADDRESS =	 {Cambridge, Mass.},
+  PAGES =	 {207--245},
+  YEAR =	 2001,
+  CROSSREF =	 {2001Teixeira},
+}
+
+@ARTICLE{2001Hiptmair,
+  AUTHOR =	 {R. Hiptmair},
+  TITLE =	 {High order {W}hitney forms},
+  JOURNAL =	 {J. Electr. Waves and Appl.},
+  VOLUME =	 {15},
+  NUMBER =	 {3},
+  YEAR =	 {2001},
+  PAGES =	 {291--436},
+}
+
+@ARTICLE{2001HiptmairB,
+  AUTHOR =	 {R. Hiptmair},
+  TITLE =	 {Discrete {H}odge operators},
+  JOURNAL =	 {Numer. Math.},
+  FJOURNAL =	 {Numerische Mathematik},
+  VOLUME =	 {90},
+  YEAR =	 {2001},
+  NUMBER =	 {2},
+  PAGES =	 {265--289},
+  ISSN =	 {0029-599X},
+  CODEN =	 {NUMMA7},
+  MRCLASS =	 {39A05 (35J25 35K57 39A12 65N06)},
+  MRNUMBER =	 {1 872 728},
+  MRREVIEWER =	 {Thomas H. Sonar},
+}
+
+@INCOLLECTION{2001HiptmairC,
+  AUTHOR =	 {R. Hiptmair},
+  TITLE =	 {{Higher order {W}hitney forms}},
+  BOOKTITLE =	 {Geometric Methods in Computational Electromagnetics,
+                  {P}{I}{E}{R} 32},
+  EDITOR =	 {F. L. Teixeira},
+  PUBLISHER =	 {EMW Publishing},
+  ADDRESS =	 {Cambridge, Mass.},
+  PAGES =	 {271--299},
+  YEAR =	 2001,
+  CROSSREF =	 {2001Teixeira},
+}
+
+@INCOLLECTION{2001HiptmairD,
+  AUTHOR =	 {R. Hiptmair},
+  TITLE =	 {Discrete {H}odge-Operators: An Algebraic
+                  Perspective},
+  BOOKTITLE =	 {Geometric Methods in Computational Electromagnetics,
+                  {P}{I}{E}{R} 32},
+  EDITOR =	 {F. L. Teixeira},
+  PUBLISHER =	 {EMW Publishing},
+  ADDRESS =	 {Cambridge, Mass.},
+  PAGES =	 {247--269},
+  YEAR =	 2001,
+  CROSSREF =	 {2001Teixeira},
+}
+
+@UNPUBLISHED{2001HymanCampbellShashkov,
+  AUTHOR =	 {James M. Hyman and J. Campbell and Mikhail
+                  J. Shashkov},
+  TITLE =	 {Mimetic Finite Difference Operators for Second-Order
+                  Tensors on Unstructured Grids},
+  NOTE =	 {LA-UR-01-1806, Submitted to Computers \& Mathematics
+                  with Applications},
+}
+
+@UNPUBLISHED{2001HymanMorelShashkovSteinberg,
+  AUTHOR =	 {James M. Hyman and J. Morel and Mikhail J. Shashkov
+                  and Stanly Steinberg},
+  TITLE =	 {Mimetic Finite Difference Methods for Diffusion
+                  Equations},
+  NOTE =	 {LA-UR-01-2434, Submitted to Journal of Computational
+                  Geosciences.{\em NOTES: }Recommended.}
+}
+
+@INCOLLECTION{2001HymanShashkov,
+  AUTHOR =	 {James M. Hyman and Mikhail J. Shashkov},
+  TITLE =	 {Mimetic Finite Difference Methods for {M}axwell's
+                  Equations and the Equations of Magnetic Diffusion},
+  BOOKTITLE =	 {Geometric Methods in Computational Electromagnetics,
+                  {P}{I}{E}{R} 32},
+  EDITOR =	 {F. L. Teixeira},
+  PUBLISHER =	 {EMW Publishing},
+  ADDRESS =	 {Cambridge, Mass.},
+  PAGES =	 {89--121},
+  YEAR =	 2001,
+  CROSSREF =	 {2001Teixeira},
+}
+
+@ARTICLE{2001HymanShashkovSteinberg,
+  AUTHOR =	 {James M. Hyman and Mikhail J. Shashkov and Stanly
+                  Steinberg},
+  TITLE =	 {The effect of inner products for discrete vector
+                  fields on the accuracy of mimetic finite difference
+                  methods},
+  JOURNAL =	 {Comput. Math. Appl.},
+  FJOURNAL =	 {Computers \& Mathematics with Applications. An
+                  International Journal},
+  VOLUME =	 {42},
+  YEAR =	 {2001},
+  NUMBER =	 {12},
+  PAGES =	 {1527--1547},
+  ISSN =	 {0898-1221},
+  CODEN =	 {CMAPDK},
+  MRCLASS =	 {65N06},
+  MRNUMBER =	 {2002k:65172},
+  MRREVIEWER =	 {John C. Strikwerda},
+}
+
+@InProceedings{2001KarasozenTsybulin,
+  author =	 {B\"ulent Karas\"ozen and Vyacheslav G. Tsybulin},
+  title =	 {Conservative finite difference schemes for
+                  cosymmetric systems},
+  booktitle =	 {CASC 2001. Proceedings of the 4th international
+                  workshop, Konstanz, Germany, September 22-26,
+                  2001. Berlin},
+  pages =	 {363--375},
+  year =	 {2001},
+  editor =	 {Victor G. Ganzha,},
+  publisher =	 {Springer},
+}
+
+@Unpublished{2001KitsonMclachlanRobidoux,
+  author =	 {A. Kitson and R. I. McLachlan and N. Robidoux},
+  title =	 {Skew-adjoint finite difference methods},
+  note =	 {Accepted for publication in the {\em New Zealand
+                  Journal of Mathematics.}},
+  year =	 {2001},
+}
+
+@Article{2001KoleFiggeDeRaedt,
+  author =	 {J. S. Kole and M. T. Figge and H. De Raedt},
+  title =	 {Unconditionally Stable Algorithms to Solve the
+                  Time-Dependent Maxwell Equations},
+  journal =	 {Physical Review E},
+  volume =	 {64},
+  month =	 {December},
+  number =	 {6},
+  pages =	 {1--14},
+  year =	 {2001},
+}
+
+@TECHREPORT{2001LiskaGanzhaZenger,
+  AUTHOR =	 {R. Liska and V. Ganzha and C. Zenger},
+  TITLE =	 {Mimetic Finite Difference Methods for Elliptic
+                  Equations on Unstructured Grids},
+  YEAR =	 {2001},
+  INSTITUTION =	 {Los Alamos National Laboratory},
+  NUMBER =	 {LA-UR-01-6955},
+  ADDRESS =	 {Los Alamos, NM},
+  NOTE =	 {Also TUM-I0108. http://cnls.lanl.gov/$\sim$shashkov/
+                  },
+  URL =		 {http://cnls.lanl.gov/~shashkov/},
+}
+
+@INCOLLECTION{2001Marrone,
+  AUTHOR =	 {M. Marrone},
+  TITLE =	 {Computational Aspects of the Cell Method in
+                  Electrodynamics},
+  BOOKTITLE =	 {Geometric Methods in Computational Electromagnetics,
+                  {P}{I}{E}{R} 32},
+  EDITOR =	 {F. L. Teixeira},
+  PUBLISHER =	 {EMW Publishing},
+  ADDRESS =	 {Cambridge, Mass.},
+  PAGES =	 {317--356},
+  YEAR =	 2001,
+  CROSSREF =	 {2001Teixeira},
+}
+
+@INCOLLECTION{2001Mattiussi,
+  AUTHOR =	 {C. Mattiussi},
+  TITLE =	 {{The geometry of time-stepping}},
+  BOOKTITLE =	 {Geometric Methods in Computational Electromagnetics,
+                  {P}{I}{E}{R} 32},
+  EDITOR =	 {F. L. Teixeira},
+  PUBLISHER =	 {EMW Publishing},
+  ADDRESS =	 {Cambridge, Mass.},
+  PAGES =	 {123--149},
+  YEAR =	 2001,
+  CROSSREF =	 {2001Teixeira},
+}
+
+@UNPUBLISHED{2001MeyerDesbrunSchroederBarr,
+  AUTHOR =	 {Mark Meyer and Mathieu Desbrun and Peter Schroeder
+                  and Alan H. Barr},
+  TITLE =	 {Discrete Differential-Geometry Operators for
+                  Triangulated 2-Manifolds},
+  NOTE =	 {Preprint: See {\tt
+                  http://www-grail.usc.edu/pubs.html}},
+  URL =		 {http://www-grail.usc.edu/pubs.html},
+}
+
+@ARTICLE{2001MorelHallShashkov,
+  AUTHOR =	 {J. Morel and M. Hall and Mikhail J. Shashkov},
+  TITLE =	 {A local support-operators diffusion discretization
+                  scheme for hexahedral meshes},
+  JOURNAL =	 {J. Comput. Phys.},
+  FJOURNAL =	 {Journal of Computational Physics},
+  VOLUME =	 {170},
+  YEAR =	 {2001},
+  NUMBER =	 {1},
+  PAGES =	 {338--372},
+  ISSN =	 {0021-9991},
+  CODEN =	 {JCTPAH},
+  MRCLASS =	 {65N06},
+  MRNUMBER =	 {2002e:65156},
+  MRREVIEWER =	 {John C. Strikwerda},
+  URL =		 {http://cnls.lanl.gov/~shashkov},
+}
+
+@INCOLLECTION{2001Puska,
+  AUTHOR =	 {P. Puska},
+  TITLE =	 {Covariant Isotropic Constitutive Relations in
+                  Clifford's Geometric Algebra},
+  BOOKTITLE =	 {Geometric Methods in Computational Electromagnetics,
+                  {P}{I}{E}{R} 32},
+  EDITOR =	 {F. L. Teixeira},
+  PUBLISHER =	 {EMW Publishing},
+  ADDRESS =	 {Cambridge, Mass.},
+  PAGES =	 {413--428},
+  YEAR =	 2001,
+  CROSSREF =	 {2001Teixeira},
+}
+
+@BOOK{2001Samarskii,
+  AUTHOR =	 {Alexander A. Samarskii},
+  TITLE =	 {The theory of difference schemes},
+  SERIES =	 {Monographs and Textbooks in Pure and Applied
+                  Mathematics},
+  VOLUME =	 {240},
+  PUBLISHER =	 {Marcel Dekker Inc.},
+  ADDRESS =	 {New York},
+  YEAR =	 {2001},
+  PAGES =	 {xviii+761},
+  ISBN =	 {0-8247-0468-1},
+  MRCLASS =	 {65-02 (65M06 65M12 65N06 65N12)},
+  MRNUMBER =	 {2002c:65003},
+  MRREVIEWER =	 {Raytcho Lazarov},
+  NOTE =	 {Translated from the Russian.},
+}
+
+@UNPUBLISHED{2001Seiler,
+  AUTHOR =	 {Werner M. Seiler},
+  TITLE =	 {Completion to Involution and Semi-Discretization},
+  NOTE =	 {Preprint: See {\tt
+                  http://www.math.uni-mannheim.de/\~{}wms} },
+  URL =		 {http://www.math.uni-mannheim.de/~wms},
+}
+
+@INCOLLECTION{2001TarhasaariKettunen,
+  AUTHOR =	 {T. Tarhasaari and L. Kettunen},
+  TITLE =	 {{Topological approach to computational
+                  electromagnetism}},
+  BOOKTITLE =	 {Geometric Methods in Computational Electromagnetics,
+                  {P}{I}{E}{R} 32},
+  EDITOR =	 {F. L. Teixeira},
+  PUBLISHER =	 {EMW Publishing},
+  ADDRESS =	 {Cambridge, Mass.},
+  PAGES =	 {189--206},
+  YEAR =	 2001,
+  CROSSREF =	 {2001Teixeira},
+}
+
+@BOOK{2001Teixeira,
+  EDITOR =	 {F. L. Teixeira},
+  TITLE =	 {Geometric Methods in Computational Electromagnetics,
+                  {P}{I}{E}{R} 32},
+  PUBLISHER =	 {EMW Publishing},
+  ADDRESS =	 {Cambridge, Mass.},
+  YEAR =	 2001,
+}
+
+@INCOLLECTION{2001TeixeiraB,
+  AUTHOR =	 {F. L. Teixeira},
+  TITLE =	 {{Geometrical aspects of the simplicial
+                  discretization of {M}axwell's equations}},
+  BOOKTITLE =	 {Geometric Methods in Computational Electromagnetics,
+                  {P}{I}{E}{R} 32},
+  EDITOR =	 {F. L. Teixeira},
+  PUBLISHER =	 {EMW Publishing},
+  ADDRESS =	 {Cambridge, Mass.},
+  PAGES =	 {171--188},
+  YEAR =	 2001,
+  CROSSREF =	 {2001Teixeira},
+}
+
+@INCOLLECTION{2001Tonti,
+  AUTHOR =	 {Enzo Tonti},
+  TITLE =	 {{Finite formulation of the electromagnetic field}},
+  BOOKTITLE =	 {Geometric Methods in Computational Electromagnetics,
+                  {P}{I}{E}{R} 32},
+  EDITOR =	 {F. L. Teixeira},
+  PUBLISHER =	 {EMW Publishing},
+  ADDRESS =	 {Cambridge, Mass.},
+  PAGES =	 {1--44},
+  YEAR =	 2001,
+  CROSSREF =	 {2001Teixeira},
+}
+
+@INCOLLECTION{2001Vanrienen,
+  AUTHOR =	 {U. van Rienen},
+  TITLE =	 {Frequency Domain Analysis of Waveguides and
+                  Resonators with FIT on Non-orthogonal Triangular
+                  Grids},
+  BOOKTITLE =	 {Geometric Methods in Computational Electromagnetics,
+                  {P}{I}{E}{R} 32},
+  EDITOR =	 {F. L. Teixeira},
+  PUBLISHER =	 {EMW Publishing},
+  ADDRESS =	 {Cambridge, Mass.},
+  PAGES =	 {357--381},
+  YEAR =	 2001,
+  CROSSREF =	 {2001Teixeira},
+}
+
+@INPROCEEDINGS{2002Arnold,
+  AUTHOR =	 {Douglas N. Arnold},
+  TITLE =	 {Differential complexes and numerical stability},
+  BOOKTITLE =	 {Proceedings of the International Congress of
+                  Mathematicians, Beijing 2002},
+  YEAR =	 {2002},
+  NOTE =	 {The transparencies from the ICM address are found at
+                  http://www.ima.umn.edu/~arnold/talks/icm2002.pdf},
+  URL =		 {http://ima.umn.edu/~arnold/papers/icm2002.pdf or
+                  http://www.ima.umn.edu/preprints/aug2002/1875.pdf},
+}
+
+@ARTICLE{2002DeHoopLagerJorna,
+  AUTHOR =	 {Adrianus T. de Hoop and Ioan E. Lager and Pieter
+                  Jorna},
+  TITLE =	 {The Space-Time Integrated Model of Electromagnetic
+                  Field Computation},
+  JOURNAL =	 {Electromagnetics},
+  YEAR =	 {2002},
+  NUMBER =	 {22},
+  PAGES =	 {371--379}
+}
+
+@BOOK{2002EstepTavener,
+  EDITOR =	 {Donald Estep and Simon Tavener},
+  TITLE =	 {Collected Lectures on the Preservation of Stability
+                  Under discretization},
+  PUBLISHER =	 {SIAM},
+  ADDRESS =	 {Philadelphia},
+  YEAR =	 {2002},
+}
+
+@ARTICLE{2002Hiptmair,
+  AUTHOR =	 {R. Hiptmair},
+  TITLE =	 {Finite elements in computational electromagnetism},
+  JOURNAL =	 {Acta Numerica},
+  YEAR =	 {2002},
+  PAGES =	 {237--339},
+  VOLUME =	 {11},
+  MONTH =	 {January},
+}
+
+@INCOLLECTION{2002HymanMorelShashkovSteinberg,
+  AUTHOR =	 {James M. Hyman and J. Morel and Mikhail J. Shashkov
+                  and Stanly Steinberg},
+  TITLE =	 {Mimetic Finite Difference Methods for Diffusion
+                  Equations},
+  BOOKTITLE =	 {Locally Conservative Numerical Methods for Flow in
+                  Porous Media},
+  EDITOR =	 {M. G. Edwards and R. Lazarov and I. Yotov},
+  JOURNAL =	 {Journal of Computational Geosciences},
+  VOLUME =	 {6},
+  YEAR =	 {2002},
+  PAGES =	 {333--353},
+}
+
+@UNPUBLISHED{2002HymanSteinberg,
+  AUTHOR =	 {James M. Hyman and Stanly Steinberg},
+  TITLE =	 {Convergence of Mimetic Discretization for Rough
+                  Grids},
+  NOTE =	 {Submitted for publication},
+}
+
+@ARTICLE{2002Mattiussi,
+  AUTHOR =	 {Claudio Mattiussi},
+  TITLE =	 {A reference discretization strategy for the
+                  numerical solution of physical field problems},
+  JOURNAL =	 {Advances in Imaging and Electron Physics},
+  VOLUME =	 {121},
+  YEAR =	 {2002},
+  PAGES =	 {143--279},
+}
+
+@PHDTHESIS{2002Robidoux,
+  AUTHOR =	 {Nicolas Robidoux},
+  TITLE =	 {Numerical Solution of the Steady Diffusion Equation
+                  with Discontinuous Coefficients},
+  SCHOOL =	 {University of New Mexico},
+  ADDRESS =	 {Albuquerque, NM},
+  YEAR =	 {2002},
+  MONTH =	 {May},
+  PAGES =	 {xxiv+131},
+  URL =		 {http://citeseer.nj.nec.com/robidoux02numerical.html
+                  or
+                  http://www.math.sfu.ca/~nrobidou/public_html/prints/thesis/thesis.pdf},
+}
+
+@UNPUBLISHED{2002RobidouxSteinberg,
+  AUTHOR =	 {Nicolas Robidoux and Stanly Steinberg},
+  TITLE =	 {A Discrete Vector Calculus in Tensor Grids},
+  YEAR =	 {2002},
+  URL =		 {http://math.unm.edu/~stanly/},
+}
+
+@UNPUBLISHED{2002Steinberg,
+  AUTHOR =	 {Stanly Steinberg},
+  TITLE =	 {A Discrete Calculus with Applications to
+                  Discretizing Boundary-Value Problems},
+  YEAR =	 {2002},
+  NOTE =	 {Preprint.},
+  URL =		 {http://math.unm.edu/~stanly/},
+}
+

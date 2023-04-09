@@ -1,0 +1,19 @@
+# Introduction
+
+# Notation
+
+| Symbole          | Description                                                     |
+|------------------|-----------------------------------------------------------------|
+| $\Delta$         | Letre greq Delta représentant une varaition (ex. $\Delta x$ une variation de $x$). |
+| $\frac{df}{dx}$  | Opéretateur dérivé notation de Leibniz. Dérivé n-éme $\frac{d^n f}{dx^n}$.|
+| $f^\prime$       | Opéretateur dérivé notation de Lagrange. Dérivé n-éme $f^{(n)}$.  |
+| $\partial_x f$   | Opéretateur dérivé notation de Euler ($D_x f$). Dérivé n-éme $\partial_x^n f$.|
+| $f*g$            | Produite de convolution $(f*g)(x)\equiv\int{f(t)g(x-t)dt}$.     |
+|                  |                                                                 |
+| $\delta$         | Distribution de Dirac                                           |
+| $sinc(x)$        | Fonction sinus cardinal $\frac{\sin(x)}{x}$                     |
+|                  |                                                                 |
+| $.^T$            | Vecteur ou matrice transposé                                    |
+| $.^{-1}$         | Matrice invers                                                  |
+
+

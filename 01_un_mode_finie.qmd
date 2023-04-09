@@ -1,0 +1,366 @@
+---
+jupyter: python3
+---
+
+# Source d'erreur dans le calcul numérique
+
+Nous commençons ce chapitre par un ensemble de considérations sur les erreurs de calcul numérique. Ce point est important car soulève souvent certaines confusions. Nous allons donc tâcher par des exemples simples de clarifier ce qu'il en est réellement et quels sont les impacts réels. Nous commencerons par la notion de précision finie des nombres à virgule flottante.
+
+## Précision finie
+
+### Erreur d'arrondie
+
+Le calcul numérique fait appel, généralement, aux nombres à virgule flottante. Les calculs ainsi réalisés ont donc une précision finie. Pour nous en convaincre, nous pouvons considérer l'exemple suivant qui illustre très simplement cet état de fait. Dans ce petit programme, nous réalisons la somme algébrique de onze fois la fraction 1/11. D'un point de vue formel, cette somme est égale à 1. Mais d'un point de vue numérique cela est-il le cas ?
+
+```{python}
+#| code-fold: False
+
+a: float = 1.0 / 11.0
+
+if a + a + a + a + a + a + a + a + a + a + a == 1.0:
+    print("Equal.")
+else:
+    print("Not equal.")
+```
+
+Visiblement non, ces deux termes ne sont pas égaux, alors qu'ils devraient. Mais pourquoi n'avons nous pas cette égalité ? En pratique, les nombres "numériques" (ceux utilisé par votre ordinateur) sont représentés sous une forme binaire finie. On parle de nombre à virgule flottante. Dans cette représentation, seulement un nombre fini de nombre sont représentés. Par exemple, la fraction 1/11 n'existe pas. Ainsi le résultat de la fraction 1/11 est remplacé par le nombre à virgule flottante le plus proche, ici 0.09090909090909091 pour une représentation en 64 bits. La différence entre le nombre désiré et sa représentation est la précision machine.
+
+La précision machine, on parle aussi de $\epsilon$ (epsilone) machine, est définie comme le plus grand nombre qui, ajouté à n'importe quel autre nombre, est égale à ce deuxième $a + \epsilon \equiv a$ (d'un point de vue numérique). Pour évaluer ce nombre, nous pouvons utiliser le programme suivant :
+
+```{python}
+#| code-fold: False
+
+a: float = 1.0
+e: float = 0.5
+
+b = a + e
+
+while b != a:
+    e /= 2.0
+    b = a + e
+
+print(f"{a} + {e} = {a}")
+```
+
+$a$ prend la valeur 1 et $e$ initialisé avec la valeur 0.5 qui joue le rôle de notre epsilone. Puis nous calculons leur somme que nous stockons dans $c$. Dans la suite, nous entrons dans une boucle qui se répète tant que la quantité $b = a + e$ est différente de $a$. Théoriquement, cette boucle est infinie. Dans cette boucle, nous divisons par deux la quantité stockée dans la variable $e$, puis nous réévaluons la somme $b = a + e$. La quantité $e$ va donc décroître jusqu'à approcher de la précision machine suivant la définition précédemment donnée. Une fois cette quantité évaluée, elle est affichée.
+
+On parle d'erreur d'arrondie (round-off).
+
+Aujourd'hui tout langage de programmation informatique fournit un ensemble d'utilitaires pour connaître la précision, sous tous ces angles, des nombres à virgule flottante utilisés. Par exemple :
+
+```{python}
+#| code-fold: False
+
+import numpy as np
+
+print(np.finfo(float))
+```
+
+### Erreur de troncature
+
+Il y a un autre type d'erreur qui survient quand on remplace une expression mathématique par une approximation. Il s'agit plus d'une erreur liée à l'utilisation d'une forme approchée d'un objet mathématique pour le faire rentrer dans l'ordinateur. Par exemple, que se passe-t-il dans notre ordinateur quand on calcule $\exp(x) = \sum_{n=0}^{\infty} {\frac{x^n}{n!}}$ ? Pas évident de programmer une somme infinie de terme. 
+
+:::{.callout-tip}
+Exercice : faire un programme qui permet de calculer une forme approchée de la fonction exponentielle en exploitant la notion d'erreur machine. Puis comparer les performances de votre fonction avec la fonction native de votre langage de programmation.
+:::
+
+Un autre exemple est l'estimation d'une dérivée par une différence. Cette fois, il ne s'agit pas d'une erreur de représentation dans la machine. Le choix de l'analyse de cet opérateur n'est pas anodine. En effet, nous verrons qu'il est central dans la mise en oeuvre de l'algorithme de Yee (FDTD), mais ne brûlons pas les étapes.
+
+$$
+\frac{ dv } { dt } \approx \frac{ \Delta v } { \Delta T } = \frac{ v(t_{i+1}) - v(t_{i}) } { t_{i+1} - t_{i} }
+$$ {#eq-deriv}
+
+Cette approximation s'appuie sur une troncature de la série de Taylor qui, pour une fonction $f$ indéfiniment dérivable au point $x_0$, donne le développement de la série en ce point, qui s'exprime ainsi :
+
+$$
+f(x) = \sum_{k=0}^{\infty}{ \frac{ f^{(k)}(x_0) } {k! } \left( x - x_0 \right)^k }
+$$ {#eq-taylor}
+
+si on note $x = x_0 + h$ où $h$ est la distance entre le point de "référence" et le point d'"évaluation", ainsi nous pouvons approximer la fonction $f$ par troncature comme suit :
+
+$$
+f(x_0 + h) \approx f(x_0) + f'(x_0) h + \frac{1}{2!} f''(x_0) h^2 + \dots + \frac{1}{n!} f^{(n)}(x_0) h^n
+$$ {#eq-func-approx-taylor}
+
+Nous donnons ici une représentation des approximations en considérent le premier, le deuxième et le troisième termes de la série de Taylor pour estimer la fonction $f(x)=-0.1 x^4 - 0.15 x^3 - 0.5 x^2 - 0.25 x + 1.2$
+
+```{python}
+#| label: fig-func-approx-taylor
+#| fig-cap: "Représentation de l'approximation d'une fonction par troncature de la série de Taylor."
+
+import numpy as np
+import matplotlib as mpl
+import matplotlib.pyplot as plt
+%matplotlib inline
+
+def f(x: float, order: int = 0):
+    "Evaluate the f function and thene derivative"
+    if order == 0:
+        return -0.1 * x**4 - 0.15 * x**3 - 0.5 * x**2 - 0.25 * x + 1.2
+    elif order == 1:
+        return -0.4 * x**3 - 0.45 * x**2 - 1.0 * x - 0.25
+    elif order == 2:
+        return - 1.2 * x**2 - 0.9 * x - 1.0
+    elif order == 3:
+        return - 2.4 * x - 0.9
+    elif order == 4:
+        return - 2.4
+    else:
+        return 0.0
+
+
+def truncated_taylor_serie(x_0, x, f, N):
+    r"""Evaluate the Taylor N first terme of the function f.
+    
+    f(x) \approx \sum_{k=0}^{N}{ \frac{ f^(k)(x_0) } { k! } ( x - x_0 )^k }
+    """
+
+    h = x - x_0
+    y = 0
+    for i in range(N):
+        y += h**i / np.math.factorial(i) * f(x_0, i)
+    return y
+
+fig, ax = plt.subplots()
+
+#
+x_0 = 0.0
+h = 1.0
+N = 100
+dh = h*6/5
+dx = h/5
+
+#
+x = np.linspace(x_0 * 0.8, x_0 + h * 1.2, N)
+y = f(x)
+ax.plot(x, y, linewidth=2.0)
+
+#
+x = np.linspace(x_0, x_0 + h, N)
+
+for i, label in [
+    (1, r"$f_1(x) = f(x_0)$"), 
+    (2, r"$f_2(x) = f(x_0)+h f'(x_0)$"), 
+    (3, r"$f_3(x) = f(x_0)+h f'(x_0) + \frac{h^2}{2} f''(x_0)$"), 
+    #(4, "$f_4(x) = f(x_0)+h f'(x_0) + h^2 f''(x_0) + h^3 f'''(x_0)$")
+    ]:
+    y = truncated_taylor_serie(x_0, x=x, f=f, N=i)
+    ax.plot(x, y)
+    ax.text(x[-1] * 1.05, y[-1], label)
+
+ax.text(x_0, f(x_0) * 0.9, "$f(x_0)$")
+ax.text(x_0 + h * 1.05, f(x_0+h) * 1.05, "$f(x)$")
+ax.grid()
+```
+
+L'erreur peut être évaluée en la regroupant dans un terme d'ordre supérieur.
+
+$$
+f(x_0 + h) = f(x_0) + f'(x_0) h + \frac{1}{2!} f''(x_0) h^2 + \dots + \frac{1}{(n-1)!} f^{(n-1)}(x_0) h^{n-1} + R_n
+$$ {#eq-tailor-tronc-error}
+
+où $R_n = \frac{ f^{(n)}(\xi) } { n! } h^{n}$ est l'erreur de troncature avec $\xi$ une inconnue entre $x_0$ et $x_0 + h$ (Théorème des accroissements finis). L'erreur n'est donc pas connue avec précision. Nous savons en revanche qu'elle est proportionnelle à $h^{n}$. On dit que l'approximation est d'ordre $h^{n}$, notée $\mathcal{O}(h^{n})$. 
+
+Après cette digression qui nous servira dans la suite, lors de l'évaluation de l'erreur de troncature de la serie de Taylor, revenons à notre estimation de la dérivé d'une fonction par une différence. Si nous prenons la série à l'ordre 2, nous avons :
+
+$$
+f(x + h) = f(x) + f'(x) h + \mathcal{O}(h^{2})
+$$ {#eq-taylor-ord2}
+
+Notons que nous avons remplacé la variable muette $x_0$ utilisée dans le développement sur la série de Taylor par $x$ dans un souci de clarté. 
+
+Nous pouvons réécrire la précédente équation comme suit :
+
+$$
+f'(x) = \frac{ f(x + h) - f(x) } { h } - \mathcal{O}(h)
+$$ {#eq-taylor-left-deriv}
+
+On parle ici de l'approximation à droite de la dérivée. Nous noterons que l'ordre d'approximation est passé de $\mathcal{O}(h^2)$ à $\mathcal{O}(h)$ car il a été divisé par $h$. Il n'y a pas de subtilité ici et pour s'en convaincre, il suffit de revenir à la définition de l'erreur $R_n$. 
+
+Nous pouvons également définir l'estimation de la dérivée à gauche :
+
+$$
+f'(x) = \frac{ f(x) - f(x - h) } { h } - \mathcal{O}(h)
+$$ {#eq-taylor-left-deriv}
+
+Ou encore l'approximation centrée de la dérivée.
+
+$$
+f'(x) = \frac{ f(x + h) - f(x - h) } { 2h } - \mathcal{O}(h^2)
+$$ {#eq-taylor-deriv}
+
+Nous noterons, dans cette dernière approximation, que nous avons changé d'ordre d'approximation. Ce changement d'ordre peut paraître étrange car l'approximation centrée peut être déduite en sommant les deux autres approximations. Pour justifier le changement d'ordre, nous prenons le développement de la série de Taylor à l'ordre 3 en $x + h$ et en $x - h$. A cause de la parité de la puissance, nous avons un changement de signe alterné entre chaque terme. Ainsi, en soustrayant les deux équations, le premier et le troisième terme s'annulent. C'est cette propriété qui nous permet d'avoir une approximation à l'ordre 2.
+
+$$
+\begin{align}
+f(x+h) &= f(x) + f'(x) h + \frac{1}{2!} f''(x) h^2 + \mathcal{O}(h^{3})\\
+f(x-h) &= f(x) - f'(x) h + \frac{1}{2!} f''(x) h^2 + \mathcal{O}(h^{3})\\
+f(x+h) - f(x-h) &= 2 f'(x) h + \mathcal{O}(h^{3})
+\end{align}
+$$ {#eq-taylor-centered-deriv}
+
+Nous pouvons tracer l'erreur de l'approximation en fonction du pas de discrétisation. Cette représentation permet de visualiser l'ordre de l'approximation. En effet, l'ordre de l'approximation se traduit dans la pente de cette erreur. De plus, nous pouvons conparer relativement les différentes approximations en comparant leurs erreurs. Par exemple dans la figure suivante, nous représentons l'erreur relative $|\tilde{f'} - f'| / |f'|$ où $\tilde{f'}$ est la valeur arrondie de la dérivée de $f$ notée $f'$. Cette courbe d'erreur est obtenue en évaluant l'erreur en $x=0.5$ de la fonction $f$ précédemment utilisée en exemple. Cette erreur est tracée pour les trois formulations de l'approximation de la dérivée de $f$.
+
+```{python}
+#| label: fig-func-approx-taylor-error
+#| fig-cap: "Représentation de l'erreur d'approximation de la dériée par troncture de la série de Taylor."
+
+def dev_estimation_error(x: float, h: float):
+    f_p = f(x + h)
+    f_0 = f(x)
+    f_m = f(x - h)
+
+    forward = (f_p - f_0) / h
+    backward = (f_0 - f_m) / h
+    central = (f_p - f_m) / (2 * h)
+
+    f_prim = f(x, 1)
+
+    return (
+        abs(forward - f_prim) / abs(f_prim),
+        abs(backward - f_prim) / abs(f_prim),
+        abs(central - f_prim) / abs(f_prim),
+    )
+
+
+x: float = 0.5
+h = np.logspace(-2, 0, 100)
+forward, backward, centred = dev_estimation_error(x, h)
+
+fig, ax = plt.subplots()
+ax.loglog(h, forward, label="Forward")
+ax.loglog(h, backward, label="Backward")
+ax.loglog(h, centred, label="Centred")
+ax.legend()
+ax.set_xlabel("h")
+ax.set_ylabel(r"err")
+ax.grid()
+```
+
+Nous constatons bien que l'approximation par une différence finie centré (c'est le nom donné à l'approximation centrée) a une pente de 2, contrairement aux deux autres qui ont une pente de 1. Cette pente, ou l'ordre d'approximation, dit que, si nous divisons par deux le pas $h$, alors l'erreur est divisée par quatre. 
+
+### Erreur Totale
+
+L'évaluation de la dérivée n'échappe pas à l'erreur d'arrondi. Nous pouvons représenter l'erreur d'arrondi par $f = \tilde{f} - e$ où $\tilde{f}$ représente la fonction arrondie et $e$ l'erreur d'arrondi associée. Nous avons donc :
+
+$$
+f'(x_i) = \frac{ f(x_{i+1}) - f(x_{i-1}) } { 2h } - \frac{ f^{(3)}(\xi) }{ 6 } h^2 + \frac{ e_{i+1}  - e_{i-1} } { 2h }
+$$ {#eq-taylor-deriv-num}
+
+Nous pouvons déduire de cette expression l'erreur totale associée à l'approximation de la dérivée de $f$ qui prend donc la forme suivante :
+
+$$
+err = \frac{ e_{i+1}  - e_{i-1} } { 2h } - \frac{ f^{(3)}(\xi) }{ 6 } h^2
+$$ {#eq-taylor-total-error}
+
+Nous constatons d'une part que l'erreur de troncature est proportionnelle au carré du pas de discrétisation. D'autre part, l'erreur d'arrondi quant à elle, est inversement proportionnelle au pas de discrétisation. 
+
+Sur la figure suivante, est tracée l'erreur totale numérique sur l'estimation de la dérivée pour la fonction $f$ précédemment définie.
+
+```{python}
+#| label: fig-taylor-deriv-totao-error
+#| fig-cap: "Représentation de l'erreur numerique total d'approximation de la dériée par troncture de la série de Taylor."
+
+h = np.logspace(-20, 0, 1000)
+forward, backward, centred = dev_estimation_error(x, h)
+
+fig, ax = plt.subplots()
+ax.loglog(h, forward, label="Forward")
+ax.loglog(h, backward, label="Backward")
+ax.loglog(h, centred, label="Centred")
+ax.legend()
+ax.set_xlabel("h")
+ax.set_ylabel("err")
+ax.grid()
+```
+
+L'erreur de troncature croît avec le pas de discrétisation et l'erreur d'arrondi décroît avec le pas de discrétisation. Ce résultat est un peu en opposition avec l'idée reçue que : 
+
+$$
+\left. \frac{ \Delta v } { \Delta T }\right|_{\Delta T \to 0} \ne \frac{ dv } { dt }
+$$
+
+En tout cas d'un point de vue numérique.
+
+## Résolution de système linéaire et inverse
+
+La résolution des systèmes linéaires et le calcul de leurs inverses font parties intégrantes du calcul numérique. Comme tout calcul numérique sur ordinateur, ils sont sujets aux erreurs numériques comme les erreurs d'arrondis ou "numérical cancel". Prenons par exemple le système linéaire d'équation suivante :
+
+$$
+\begin{align}
+2 &= 1.01 x_1 + 0.99 x_2 \\
+2 &= 0.99 x_1 + 1.01 x_2
+\end{align}
+$$
+
+Qui peut être mis sous la forme matricielle de la forme $Ax = b$ suivante :
+
+$$
+\begin{bmatrix}
+1.01 & 0.99 \\
+0.99 & 1.01 
+\end{bmatrix}
+\begin{bmatrix}
+x_1 \\ x_2
+\end{bmatrix}
+=
+\begin{bmatrix}
+2 \\ 2
+\end{bmatrix}
+$$
+
+Nous pouvons trouver relativement simplement que la solution est : $x = [1, 1]^T$, avec l'opérateur $.^T$ la transposée. Maintenant, si l'on change légèrement le second membre en le remplaçant par $\hat{b} = [2.02, 1,98]^T$ et en calculant la solution du système $A \hat{x} = \hat{b}$. Nous avons une solution très différente $\hat{x} = [2, 0]$. Dans ce cas de figure, un changement minime $\pm1\%$ produit une solution avec $\pm100\%$ de différence. Un regard attentif notera que cette matrice est "presque" singulière (matrice de 1).
+
+Si l'on regarde les valeurs propres de ce système linéaire, nous avons : $trac(A) = \lambda_1 + \lambda_2$ et $det(A) = \lambda_1 \lambda_2$. Nous avons donc :
+
+$$
+\begin{align}
+2.02 &= \lambda_1 + \lambda_2 \\
+0.04 &= \lambda_1 \lambda_2
+\end{align}
+$$
+
+Il vient que $\lambda_1 = 2$ et $\lambda_2 = 0.02$. Un critére relativement naturel est de prendre le rapport $c = \max(\lambda_i) / \min(\lambda_i)$, nous avons un critère intuitif pour évaluer la stabilité du calcul de la solution d'un système linéraire. En effet, si $c \to 1$ la solution sera "stable". En revanche, si $c \to \infty$, la solution du système ne sera pas "stable".
+
+Il est possible de mieux définir cette notion de stabilité. Cette notion de stabilité traduit comment la résolution du système va propager une erreur. Dans l'exemple précédent, une erreur de $1\%$ définie par $\|\hat{b} - b\|/ \|b\|$ sur le second membre, a produit une erreur de $100\%$ sur la solution $\|\hat{x} - x\|/\|x\|$. 
+
+Le critère qui nous intéresse est un critère qui quantifie comment l'erreur se propage. Dans un premier temps, nous considérons l'erreur absolue, c'est-à-dire : $A (\hat{x} - x) = \hat{b} - b$. Il vient de façon assez naturelle que :
+
+$$
+\| \hat{x} - x \| = \|A^{-1} (\hat{b} - b)\| \le \|A^{-1}\| \|\hat{b} - b\| 
+$$ {#eq-abs-error}
+
+avec l'opérateur $.^{-1}$ l'inverse. De façon très similaire nous avons :
+
+$$
+\| b \| = \|A x\| \le \|A\| \|x\| 
+$$ {#eq-left-error}
+
+En conbinant ces deux relations, nous arrivons : 
+
+$$
+\frac{ \|\hat{x} - x\| }{ \|x\| } \le \|A\| \|A^{-1}\| \frac{ \|\hat{b} - b\| }{ \|b\| }
+$$ {#eq-error-max}
+
+Cette inégalité permet de borner l'erreur dans le calcul de la solution du système linéaire. De plus cette borne ne dépend que de l'erreur sur le second menbre, du système linéaire et du choix de la norme.
+
+Le conditionnement de la matrice $A$ (critère définissant la stabilité du calcul de la solution) est définie par :
+
+$$
+cond(A) = \|A\| \|A^{-1}\|
+$$ {#eq-cond}
+
+que l'on peut indicer avec le choix de la norme par exemple $cond_{\infty}(A)$ pour la norme infinie.
+
+En définitive, plus le conditionnement est petit, moins l'erreur se propage et plus la résolution est robuste.
+
+L'évaluation du conditionnement d'une matrice est aujourd'hui simple de mise en oeuvre car disponible dans les biliothèques scientifiques.
+
+```{python}
+#| code-fold: False
+import numpy.linalg as lg
+
+A = np.array(((1.01, 0.99), (0.99, 1.01)))
+print("Cond(A)=%g" % lg.cond(A))
+```
+

@@ -1,0 +1,423 @@
+---
+jupyter: python3
+---
+
+## Transformée de Fourier
+
+Il est difficile d'aborder le calcul numérique sans parler de transformée de Fourier (FT Fourier transform) ou plus précisément de transformée de Fourier discrète (DFT Discrete Fourier Transforme). Au delà des propriétés de la transformée de Fourier discrète, il est important de la considérer sous un angle de précision et d'erreur. Mais avant d'aborder ce point, revenons aux fondamentaux.
+
+### Définition de la transformée de Fourier discrète
+
+La transformée de Fourier $\mathcal{F}$ d'une fonction $x(t)$ intégrable sur $\mathbb{R}$ que l'on note $\mathcal{F}(x(t)) = X(f)$ est définie par :
+
+$$
+X(f) = \int_{-\infty}^{+\infty} {x(t) \exp \left(- j 2 \pi f t \right) dt}
+$$ {#eq-ft-def}
+
+Cependant d'un point de vue numérique, nous ne pouvons pas réaliser cette opération de par la nature finie des ordinateurs. Pour approcher cet opérateur, nous sommes ammenés :
+
+- à discrétiser la fonction temporelle $x$, 
+- à tronquer cette série c'est-à-dire à en prendre un nombre finie d'échantillons et
+- à discrétiser la fonction fréquentielle $X$.
+
+En approchant cette intégrale par l'approche des rectangles avec une discrétisation $T_e$ pour échantillon, nous avons :
+
+$$
+X(f) \approx T_e \sum_{n=-\infty}^{\infty} { x(n T_e) \exp \left(- j 2 \pi f n T_e \right) }
+$$ {#eq-ft_int_rect}
+
+Nous pouvons maintenant tronquer cette somme en faisant deux hypothèses permettant de ne pas rajouter d'erreur d'approximation. La première est que la fonction $x$ est à support finie, c'est à dire qu'il existe $t_0$ et $t_1$ quelle que $x(t)=0$ pour tout $t \leq t_0$ et $t \geq t_1$. De plus, $t_0=0$ quitte à faire un changement de variable $t \leftarrow t -t_0$. Sous ces deux hypothèses, nous pouvons rendre la somme finie.
+$$
+X(f) \approx T_e \sum_{n=0}^{N-1} { x(n T_e) \exp \left(- j 2 \pi f n T_e \right) }
+$$ {#eq-ft_int_rect_finit}
+
+Avec $(N-1) T_e \geq t_1$. Nous sommes revenus à une opération que nous pouvons réaliser par ordinateur. Cependant de façon générale, nous ne calculons pas la transformée de Fourier en un seul point, nous ne la considérons pas sous la forme d'une fonction d'un point de vue informatique. En général nous la discrétisons, nous en prenons un vecteur pour avoir le spectre sur une plage de fréquence.
+
+Pour se faire, nous choisissons un pas fréquentiel lié à la fréquence d'échantillonnage $\Delta_f = f_e / N$ avec $f_e = 1 / T_e$. Nous reviendrons plus longuement sur ce choix qui n'est pas sans conséquence. Ce choix permet de simplifier les termes dans l'exponentielle qui ne dépendent plus de la fréquence d'échantillonnage.
+
+$$
+\begin{align}
+X(k f_e / N) 
+&\approx T_e \sum_{n=0}^{N-1} { x(n T_e) \exp \left(- j 2 \pi k f_e T_e n / N \right) } \nonumber\\
+&= T_e \sum_{n=0}^{N-1} { x(n T_e) \exp \left(- j 2 \pi k n / N \right) }
+\end{align}
+$$ {#eq-ft_dictre}
+
+Nous pouvons remarquer qu'il ne reste plus qu'un seul paramètre qui dépend de l'échantillonnage. Ainsi en abrégeant $x_n =n T_e$ et $f_k = k f_e / N$, nous avons :
+$$
+X(f_k) \approx T_e \sum_{n=0}^{N-1} { x(t_n) \exp \left(- j 2 \pi k n / N \right) }
+$$ {#eq-dft_n}
+
+On note transformée de Fourier discrète (DFT) de la suite $x_n$ de $N$ termes, la suite $X_k$ également de $N$ termes, définie par :
+
+$$
+X_k \equiv \sum_{n=0}^{N-1} { x_n \exp \left(- j 2 \pi k n / N \right) }
+$$ {#eq-dft_def}
+
+A une constante près ($T_e$) la DFT est une **approximation** de la transformée de Fourier d'un signal temporel échantillonné à la fréquence $f_e = 1 / T_e$. De plus, la discrétisation du spectre est directement liée à la fréquence d'échantillonage $\Delta f = f_e / N$.
+
+De manière similaire, l'inverse de la transformée de Fourier discrète est :
+$$
+x_n \equiv \frac{1}{N} \sum_{k=0}^{N-1} { X_k \exp \left(j 2 \pi k n / N \right)}
+$$ {#eq-idft_def}
+
+il est à noter qu'il existe d'autres définitions qui jouent sur la valeur du noyau et sur un facteur multiplicatif. C'est une histoire de convention.
+
+### Implémentation de la DFT
+
+Il existe de nombreuses implémentations de la transformée de Fourier discrète. En particulier, la Fast Fourier Transform qui permet de réduire la complexité du calcul. La transformée de fourier discrète naïve a pour complexité algorithmique $\mathcal{O}(N^2)$. La FFT ramène cette complexité algorithmique à $\mathcal{O}(N log(N))$ avec $N$ une puissance de 2. Dans le cas où le vecteur n'est pas en puissance de 2, le vecteur est agrandi par des valeurs nulles (0-padding). Nous n'entrerons pas plus dans les détails ici, il existe de nombreux ouvrages sur le sujet.
+
+La section de code ci-dessous est une implémentation brute force de la DFT. Nous remarquerons que la transformée de Fourier discrète peut s'écrire comme le produit d'une matrice d'exponentielle aussi nommée matrice DFT telle que $\boldsymbol{W} = \left( w^{nk} \right)_{n,k = 0, \dots, N-1}$ avec $w=e^{-2 \pi j / N}$ est le vecteur des echantillons temporels. 
+
+```{python}
+#| code-fold: False
+
+import numpy as np
+
+def dft(a):
+    "Brut force DFT"
+    N = len(a)
+    n = np.arange(N)
+    k = n.reshape((N, 1))
+    w = np.exp(-2j * np.pi * k * n / N)
+    return np.dot(w, a)
+```
+
+Cependant il est préférable d'utiliser une des nombreuses implémentations de la FFT.
+
+Dans la suite, nous utiliserons la transformée de Fourier non-normalisée. C'est-à-dire celle définie par l'équation @eq-dft_n qui s'obtient tout simplement en multipliant le résultat de la fonction précédente (DFT) ou préférablement de la FFT par l'échantillonnage $T_e$. Cette représentation permet d'avoir des unités plus habituelles du physiciens des seconds et de Hertz. 
+
+L'exemple ci-desous nous représente une fonction sinus amortie avec une fréquence propre $f_c = 10Hz$ et d'une constante de temps de $\tau = 0.1ms$ définie dans le domaine temporel par :
+
+$$
+x(t) = \sin(2 \pi f_c t) \exp\left(-t/\tau\right)
+$$
+
+La transformée de Fourier de cette fonction est :
+
+$$
+X(f) 
+= \frac{\delta(f - f_c) - \delta(f + f_c)}{2j} * \frac{\tau}{1 - 2 \pi j f \tau}
+= \frac{\tau}{2j} \left( \frac{1}{1 - 2 j \pi \tau (f - f_c)} - \frac{1}{1 - 2 j \pi \tau (f + f_c)}\right)
+$$
+
+Avec $*$ le produit de convolution.
+
+Dans cette exemple, nous echantillonnons la fonction $x$ sur l'intervalle $[0, 1]$ second avec 1000 points, soit un echantillon tous les $T_e=1ms$.
+
+```{python}
+#| label: fig-dft-sin-amorti
+#| fig-cap: "Représentation de la transformée de Fourier analytique et discrète d'une fonction sinus amortie."
+
+import numpy as np
+import matplotlib.pyplot as plt
+
+from numpy.fft import rfft, rfftfreq, fftshift
+%matplotlib inline
+
+sr = 2000 # sampling rate
+ts = 1.0 / sr # time step
+t = np.arange(0, 1, ts)
+
+f_c = 10
+tau = 0.1
+x = np.sin(2 * np.pi * 10 * t) * np.exp(- t / 0.1)
+
+X = rfft(x) * ts
+f = rfftfreq(len(x), ts)
+
+Fx = tau/(2j) * (
+    1 / (1 - 2j * np.pi * tau * (f - f_c)) - 
+    1 / (1 - 2j * np.pi * tau * (f + f_c))
+)
+
+fig, (ax_time, ax_freq) = plt.subplots(2)
+
+ax_time.plot(t, x, 'r')
+ax_time.set_ylabel('x')
+ax_time.set_xlabel("Time")
+ax_time.grid()
+
+ax_freq.plot(f, np.abs(Fx), label="$\mathcal{F}(x)$", marker="*")
+ax_freq.plot(f, np.abs(X), label="FFT")
+ax_freq.legend()
+ax_freq.set_ylabel('$| X |$')
+ax_freq.set_xlabel("Frequencies $Hz$")
+ax_freq.set_xlim(left=0, right=50)
+ax_freq.grid()
+```
+
+Dans cette exemple, la FFT se superpose à la transformée de Fourier discrétisée ($\mathcal{F}(x)$). 
+
+### Transformée de Fourier discrète quelconque
+
+Pour des raisons pratiques, nous allons également utiliser une autre implémentation de la DFT. Cette version alternative va nous permettre d'une part, d'illustrer un certain nombre de propriétés de la DFT. D'autre part, elle peut s'avérer pratique car prend en charge directement les unités physiques, mais surtout permet de décorréler l'échantillonnage temporel et fréquentiel. Pour le meilleur comme pour le pire ! 
+
+Dans cette deuxième version, classiquement nommée transformée de Fourier en temps discret DTFT (Discrete Time Fourier Transforme), le vecteur temps $t_n$ et fréquence $f_k$ sont quelconques et indépendants l'un de l'autre. En exploitant la même démarche et l'hypothèse de support fini, nous avons :
+
+$$
+X_k 
+= X(f_k) 
+= \sum_{n=0}^{N-1} { x(t_n) \Delta_n \exp \left(- j 2 \pi f_k t_n \right) }
+= \sum_{n=0}^{N-1} { x_n \Delta_n \exp \left(- j 2 \pi f_k t_n \right) }
+$$ {#eq-dtf_general}
+
+Avec $\Delta_n$ l'intervalle d'intégration tel que :
+$$
+\Delta_n = (t_{n+1} - t_{n})
+$$ {#eq-trapz_delta}
+
+Dans cette nouvelle définition de la transformée de Fourier, nous avons le vecteur des coefficients complexes de Fourier $X_k$ associé au vecteur fréquence $f_k$. Ces coefficients sont calculés pour la série $x_n$ prise aux instants $t_n$. Sous cette forme, nous avons une erreur de quadrature $R_N(x) = - \frac{(t_1 - t_0)^2}{24 N^2} x^{\prime\prime}(\xi)$ pour un $\xi \in [t_0, t_1]$. Avec $x^{\prime\prime}$ la dérivée de $x$.
+
+Nous avons déja vu dans le chapitre précédent ce type d'analyse. Nous pouvons mettre cette erreur sous la forme suivante :
+
+$$
+R_N(x) 
+= - \frac{(t_1 - t_0)^2}{24 N^2} x^{\prime\prime}(\xi)
+= - \frac{T_e^2}{24} x^{\prime\prime}(\xi)
+$$ {#eq-dft_error}
+
+où $T_e$ est l'échantillonnage. On dit que l'erreur est en $\mathcal{O}(T_e^2)$ (souvent notée $\mathcal{O}(h^2)$). Si le pas de temps est divisé par deux, l'erreur est divisée par quatre (à durée totale constante).
+
+Cette transformée de Fourier discrète est implémentée dans le module python Smux (module compagnon), dont l'usage est illustré sur le même exemple que celui utilisé pour illustrer la FFT.
+
+```{python}
+#| label: fig-dtft-sin-amorti
+#| fig-cap: "Représentation de la transformée de Fourier analytique et discrète 'généralisée' d'une fonction sinus amortie."
+
+from smux.dft import dtft
+
+f2 = np.linspace(0, 50, 100)
+X2 = dtft(x, t, f)
+
+fig, (ax_time, ax_freq) = plt.subplots(2)
+
+ax_time.plot(t, x, 'r')
+ax_time.set_ylabel('x')
+ax_time.set_xlabel("Time")
+ax_time.grid()
+
+ax_freq.plot(f, np.abs(X), label='fft', marker="*")
+ax_freq.plot(f, np.abs(X2), label='dft')
+
+ax_freq.set_ylabel('$| X |$')
+ax_freq.set_xlabel("Frequencies $Hz$")
+ax_freq.set_xlim(left=0, right=50)
+ax_freq.legend()
+ax_freq.grid()
+```
+
+### Impact de la discrétisation du signal temporel
+
+Nous avons vu que la première étape de notre développement a été de discrétiser la fonction intégrable $x(t) \to x(n / f_e)$. Au sens des distributions, pour obtenir le $n$-ème terme nous devons multiplier la fonction $x$ par la distribution de Dirac $\delta(t - n / f_e)$. Ainsi la distribution associée à la discrétisation de fréquence d'échantillonnage $f_e$ noté $x_e$, est donné par :
+$$
+x_e(t) = \sum_{n=-\infty}^{\infty} x(t) \delta(t - n / f_e) = x(t) P_{T_e}(t)
+$$ {#eq-discretisation}
+
+Avec $P_{T_e}(t) = \sum_{n=-\infty}^{\infty} \delta(t - n / f_e)$ la distribution peigne. La transformée de Fourier d'un produit de distribution est la convolution de leur transformée de Fourier respective $\mathcal{F}(f \cdot g) = \mathcal{F}(f) * \mathcal{F}(g)$. De plus, la transformée de Fourier d'un peigne de Dirac est également un peigne de Dirac, tel que : 
+
+$$
+\mathcal{F}(P_{T_e}) = f_e P_{f_e}(f) = f_e \sum_{n=-\infty}^{\infty} \delta(f - n f_e)
+$$
+
+La convolution d'un spectre par le Dirac $\delta(f - n f_e)$ revient à le translater de $n f_e$ :
+
+$$
+X(f) * \delta(f - n f_e) = X(f - n f_e)
+$$
+
+En prenant la somme du peigne de Dirac, nous pouvons en déduire que la discrétisation a pour conséquence une répétition périodique de la transformée de Fourier du signal non discrétisée que nous noterons $X_e$
+
+$$
+X_e = f_e P_{f_e} * \mathcal{F}(x)
+$$ {#eq-dft_exchant}
+
+Nous voyons un terme multiplicatif qui semble vouloir scaler la DFT. Nous verrons dans la suite que ce terme se simplifie.
+
+Ainsi si la fréquence d'échantillonnage est petite par rapport au support du spectre de la fonction considérée, nous avons ce qu'on appelle du recouvrement de spectre.
+
+Dans l'exemple qui suit, nous prenons une fonction de type gaussienne :
+
+$$
+x(t) = \exp( -(t - 3)^2)
+$$
+
+Dont la transformée de Fourier est :
+
+$$
+X(f) = \sqrt{\pi}  \exp( -(\pi f) ^ 2) \exp(-j 6 \pi f)
+$$
+
+Si nous prenons un $t_1=10$ (t fin) pour $N=50$, nous avons une fréquence d'échantillonnage de $f_e=5$. Nous constatons que nous avons bien une répétition périodique tous les multiples de $f_e$.
+
+```{python}
+#| label: fig-dft-discretisation
+#| fig-cap: "Illustration de la périodisation du spectre suite à la discrétisation en temps."
+
+from smux.functions import Gaussian, TimeShift
+
+fig, axs = plt.subplots(2, 2)
+
+# Plot parameters
+N = 100
+t_fin = 10
+f_max = N / t_fin
+
+# Sampling
+Ns = 50
+Te = t_fin / Ns
+fe = 1.0 / Te
+
+t = np.linspace(0, t_fin, N)
+t2 = np.linspace(0, t_fin, Ns)
+func = TimeShift(Gaussian(), tau=3)
+freq = np.linspace(-f_max, f_max, 2 * N)
+
+axs[0, 0].plot(t, func(t), label="$x(t)$")
+axs[0, 0].legend()
+
+axs[0, 1].plot(freq, np.abs(func.ft(freq)), label="$X(f)$")
+axs[0, 1].legend()
+
+x2 = func(t2)
+axs[1, 0].plot(t2, x2, "*", label="$x_n$")
+axs[1, 0].legend()
+
+X2 = dtft(x2, t2, freq)
+axs[1, 1].plot(freq, np.abs(X2), label="$X_n$")
+X_fft = rfft(x2) * t2[1]
+freq_fft = rfftfreq(len(t2), t2[1])
+axs[1, 1].plot(freq_fft, np.abs(X_fft), label="FFT")
+axs[1, 1].legend();
+```
+
+En haut à gauche, nous avons un tracé de la gaussienne et à droite la transformée de Fourrier. En bas, nous avons la discrétisation temporelle ainsi que la transformée de Fourier discrète associée ainsi que la FFT.
+
+Nous remarquons que la propriété de la transformée de Fourier discrète usuelle (FFT) est auto-consistante. C'est-à-dire que la fréquence maximum accessible par transformée de Fourier usuelle ($f_{max} = f_e/2 = 1/T_e/2$ ) evite des erreurs d'interprétation liée à la périodicité du spectre. En revanche, elle ne protège pas contre le recouvrement de spectre.
+
+### Impact de la troncature (fenêtrage)
+
+La deuxième étape consiste à prendre une série finie de termes dans la somme. Au sens des distributions, faire cette troncature revient à multiplier la fonction par une fonction porte que nous noterons $\Pi_{T_0}$ avec $T_0 = N T_e$. 
+
+$$
+\Pi_{T_0}(t)
+= 
+\begin{cases}
+    1 & \quad \text{si } t \in \left[-T_0/2, T_0/2\right]\\
+    0 & \quad \text{si non} 
+\end{cases}
+$$ {#eq-rect_win}
+
+Nous pouvons écrire la fonction tronquée par $x_{tr}(t) = \Pi_{T_0}(t - T_0/2) \cdot x_e(t) = \Pi_{T_0}(t - T_0/2) \cdot x(t) \cdot P_{f_e}(t)$.
+
+Nous rappelons que la transformée de Fourier de la fonction porte est :
+
+$$
+\mathcal{F}\left( \Pi_{T_0}(t) \right) = T_0 \operatorname{sinc}(\pi f T_0)
+$$ {#eq-rect_win_ft}
+
+De plus pour nous placer dans les mêmes conditions, nous avons "décaler" la fonction porte de façon à ne conserver le signal entre $0$ et $T_0$. En d'autres mots, nous utilisons la fonction $\Pi_{T_0}(t - T_0/2)$. La transformée de Fourier de cette fonction s'obtient à partir de la transformée de Fourier de la fonction porte et du pic de Dirac décalé.
+
+$$
+\begin{align}
+\mathcal{F}\left( \Pi_{T_0}(t - T_0/2) \right) 
+ & = \mathcal{F}\left( \Pi_{T_0}(t) * \delta(t - T_0 / 2) \right) \\
+ & = \mathcal{F}\left( \Pi_{T_0}(t) \right) \cdot \mathcal{F} \left( \delta(t - T_0 / 2) \right) \\
+ & = T_0 \operatorname{sinc}(\pi f T_0) \cdot \exp\left(-j 2 \pi f T_0 / 2\right)\\
+ & = T_0 \exp\left(-j \pi f T_0\right) \operatorname{sinc}(\pi f T_0)
+\end{align}
+$$
+
+Notons que l'exponentielle introduit qu'un terme de phase.
+
+En définitive la troncature revient à convoluer la transformée de Fourier par un sinus cardianal. 
+
+$$
+X_{tr}(f) = T_0 \exp\left(-j \pi f T_0\right) \operatorname{sinc}(\pi f T_0) * X_e(f) 
+$$ {#eq-dft_tr}
+
+Au final, la transformée de Fourier discrète est liée à la transformée de Fourier par le produit de convolution suivant :
+
+$$
+\begin{align}
+X_{tr}(f) 
+&= T_0 \exp\left(-j \pi f T_0\right) \operatorname{sinc}(\pi f T_0) * X_e(f) \\
+&= T_0 \exp\left(-j \pi f T_0\right) \operatorname{sinc}(\pi f T_0) * (f_e P_{f_e} * \mathcal{F}(x))(f) \\
+&= \left\{ \exp\left(-j \pi f T_0\right) \operatorname{sinc}(\pi f T_0) * P_{f_e}(f) \right\} * \mathcal{F}(x)(f)
+\end{align}
+$$ {#eq-dft_win}
+
+Pour illustrer le produit de convolution par le sinus cardinal de la troncature en temps, nous choisissons de prendre un signal temporel somme de sinus aux fréquences de $2$, $5$ et $7Hz$ avec pour amplitudes respectives $0.3$, $1$ et $0.7$. 
+
+$$
+x(t) = 0.3 \cdot sin(0.6 \pi t) + sin(10 \pi t) + 0.7 \cdot sin(14 \pi t)
+$$
+
+Dans le domaine fréquentiel, nous représentons la FFT ainsi que la DFT avec un grand nombre de points de fréquence.
+
+```{python}
+#| label: fig-dft-win
+#| fig-cap: "Illustration du fenetrage en temps sur la transformé de Fourier discréte."
+
+sr = 2000 # sampling rate
+ts = 1.0 / sr # time step
+t = np.arange(0, 1, ts)
+
+x = np.zeros_like(t)
+
+ampl_freq = list(zip((0.3, 1, 0.7), (2, 5, 7)))
+
+for a, f_c in ampl_freq:
+    x += a * np.sin(2*np.pi*f_c*t)
+
+f_max = 10
+f = np.linspace(0, f_max, 300)
+X = dtft(x, t, f)
+
+Y = rfft(x) * t[1]
+f_fft = rfftfreq(len(x), t[1])
+
+fig, (ax_time, ax_freq) = plt.subplots(2)
+
+ax_time.plot(t, x, 'r')
+ax_time.set_ylabel('x')
+ax_time.set_xlabel("Time")
+ax_time.grid()
+
+ax_freq.plot(f, np.abs(X), label="DFT")
+ax_freq.stem(f_fft, np.abs(Y), "b", label="FFT", markerfmt=".", basefmt="-b")
+ax_freq.legend()
+ax_freq.set_ylabel('$| X |$')
+ax_freq.set_xlabel("Frequencies $Hz$")
+ax_freq.set_xlim(left=0, right=f_max)
+ax_freq.grid()
+```
+
+Le résultat est surprenant. Premièrement, nous retrouvons bien le sinus cardinal, en réalité nous avons la sommation de trois sinux cardinaux. En effet, le signal est une sommation de trois sinus. La transformée de Fourier est donc : $\mathcal{F}(x) = \delta(f - 2) + \delta(f - 5) + \delta(f - 7)$. Nous sommes ici dans les conditions où la périodicité du spectre introduite par la discrétisation n'a pas d'impact (pas de recouvrement de spectre et les fréquences observées sont inférieures à $f_e$). De plus, nous ne regardons que le module de la transformée de Fourier. Nous pouvons donc simplifier l'expression précédente (@eq-dft_win) pour ce cas particulier par :
+
+$$
+X_{tr}(f) = \operatorname{sinc}(\pi f T_0) * \mathcal{F}(x)(f)
+$$
+
+Ce qui appliqué à notre cas, donne :
+
+$$
+X_{tr}(f) = \frac{0.3}{2} \operatorname{sinc}(\pi (f-2) T_0) + \frac{1}{2} \operatorname{sinc}(\pi (f-5) T_0) + \frac{0.7}{2} \operatorname{sinc}(\pi (f-7) T_0) 
+$$
+
+La figure suivante illustre les trois sinus cardinaux.
+
+```{python}
+fig, ax_freq = plt.subplots()
+
+ax_freq.plot(f, np.abs(X), label="DFT")
+for a, f_c in ampl_freq:
+    ax_freq.plot(f, 0.5 * a * np.sinc(f - f_c), label="$%g  \cdot sinc(\pi T_0 (f - %g))$" % (a/2, f_c))
+ax_freq.legend()
+ax_freq.set_ylabel('$| X |$')
+ax_freq.set_xlabel("Frequencies $Hz$")
+ax_freq.set_xlim(left=0, right=f_max)
+ax_freq.grid()
+```
+
+Le deuxième point remarquable est que la FFT et la DTFT aux mêmes fréquences que la DFT, sont exactes. En effet, le sinus cardinal $sinc(\pi f T_0)$ a ces zeros pour les fréquences $f_k = k T_0 = k f_e / N$ pour $k \in \mathbb{Z}^*$. Nous retrouvons le choix de discrétisation fréquentielle utilisé dans la DFT @eq-dft_n qui lie la discrétisation temporelle et fréquentielle @eq-dft_def. Ainsi, l'interdépendance entre l'échantillonnage temporel et fréquentiel permet d'avoir une DFT exacte sous les conditions de support fini (et de périodicité). En définitive, ce choix qui d'une part, a le bon goût d'adimensionner la DTF, a surtout l'intérêt de faire un calcul exact, c'est-à-dire sans erreur au sens formel. Nous verrons dans le chapitre suivant qu'en pratique les conditions nécéssaires ne sont pas toujours réunies.
