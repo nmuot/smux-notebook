@@ -1,5 +1,5 @@
 ---
-jupyter: python3
+jupyter: julia-1.8
 ---
 
 # Source d'erreur dans le calcul numérique
@@ -12,34 +12,38 @@ Nous commençons ce chapitre par un ensemble de considérations sur les erreurs 
 
 Le calcul numérique fait appel, généralement, aux nombres à virgule flottante. Les calculs ainsi réalisés ont donc une précision finie. Pour nous en convaincre, nous pouvons considérer l'exemple suivant qui illustre très simplement cet état de fait. Dans ce petit programme, nous réalisons la somme algébrique de onze fois la fraction 1/11. D'un point de vue formel, cette somme est égale à 1. Mais d'un point de vue numérique cela est-il le cas ?
 
-```{python}
+```{julia}
 #| code-fold: False
 
-a: float = 1.0 / 11.0
+a::Float32 = 1.0 / 11.0
 
-if a + a + a + a + a + a + a + a + a + a + a == 1.0:
-    print("Equal.")
-else:
-    print("Not equal.")
+if a + a + a + a + a + a + a + a + a + a + a == 1.0
+    println("Equal.")
+else
+    println("Not equal.")
+end
 ```
 
 Visiblement non, ces deux termes ne sont pas égaux, alors qu'ils devraient. Mais pourquoi n'avons nous pas cette égalité ? En pratique, les nombres "numériques" (ceux utilisé par votre ordinateur) sont représentés sous une forme binaire finie. On parle de nombre à virgule flottante. Dans cette représentation, seulement un nombre fini de nombre sont représentés. Par exemple, la fraction 1/11 n'existe pas. Ainsi le résultat de la fraction 1/11 est remplacé par le nombre à virgule flottante le plus proche, ici 0.09090909090909091 pour une représentation en 64 bits. La différence entre le nombre désiré et sa représentation est la précision machine.
 
 La précision machine, on parle aussi de $\epsilon$ (epsilone) machine, est définie comme le plus grand nombre qui, ajouté à n'importe quel autre nombre, est égale à ce deuxième $a + \epsilon \equiv a$ (d'un point de vue numérique). Pour évaluer ce nombre, nous pouvons utiliser le programme suivant :
 
-```{python}
+```{julia}
 #| code-fold: False
 
-a: float = 1.0
-e: float = 0.5
+using Printf
+
+a::Float32 = 1.0
+e::Float32 = 0.5
 
 b = a + e
 
-while b != a:
+while b != a
     e /= 2.0
     b = a + e
+end
 
-print(f"{a} + {e} = {a}")
+@printf("%e = %e + %e", b, a, e)
 ```
 
 $a$ prend la valeur 1 et $e$ initialisé avec la valeur 0.5 qui joue le rôle de notre epsilone. Puis nous calculons leur somme que nous stockons dans $c$. Dans la suite, nous entrons dans une boucle qui se répète tant que la quantité $b = a + e$ est différente de $a$. Théoriquement, cette boucle est infinie. Dans cette boucle, nous divisons par deux la quantité stockée dans la variable $e$, puis nous réévaluons la somme $b = a + e$. La quantité $e$ va donc décroître jusqu'à approcher de la précision machine suivant la définition précédemment donnée. Une fois cette quantité évaluée, elle est affichée.
@@ -48,12 +52,10 @@ On parle d'erreur d'arrondie (round-off).
 
 Aujourd'hui tout langage de programmation informatique fournit un ensemble d'utilitaires pour connaître la précision, sous tous ces angles, des nombres à virgule flottante utilisés. Par exemple :
 
-```{python}
+```{julia}
 #| code-fold: False
 
-import numpy as np
-
-print(np.finfo(float))
+eps(Float32)
 ```
 
 ### Erreur de troncature
@@ -84,73 +86,58 @@ $$ {#eq-func-approx-taylor}
 
 Nous donnons ici une représentation des approximations en considérent le premier, le deuxième et le troisième termes de la série de Taylor pour estimer la fonction $f(x)=-0.1 x^4 - 0.15 x^3 - 0.5 x^2 - 0.25 x + 1.2$
 
-```{python}
+```{julia}
 #| label: fig-func-approx-taylor
 #| fig-cap: "Représentation de l'approximation d'une fonction par troncature de la série de Taylor."
 
-import numpy as np
-import matplotlib as mpl
-import matplotlib.pyplot as plt
-%matplotlib inline
+using Plots
+using LaTeXStrings
 
-def f(x: float, order: int = 0):
-    "Evaluate the f function and thene derivative"
-    if order == 0:
-        return -0.1 * x**4 - 0.15 * x**3 - 0.5 * x**2 - 0.25 * x + 1.2
-    elif order == 1:
-        return -0.4 * x**3 - 0.45 * x**2 - 1.0 * x - 0.25
-    elif order == 2:
-        return - 1.2 * x**2 - 0.9 * x - 1.0
-    elif order == 3:
+function f(x, order = 0)
+    if order == 0
+        return -0.1 * x^4 - 0.15 * x^3 - 0.5 * x^2 - 0.25 * x + 1.2
+    elseif order == 1
+        return -0.4 * x^3 - 0.45 * x^2 - 1.0 * x - 0.25
+    elseif order == 2
+        return - 1.2 * x^2 - 0.9 * x - 1.0
+    elseif order == 3
         return - 2.4 * x - 0.9
-    elif order == 4:
-        return - 2.4
-    else:
+    else
         return 0.0
+    end
+end
 
-
-def truncated_taylor_serie(x_0, x, f, N):
-    r"""Evaluate the Taylor N first terme of the function f.
-    
-    f(x) \approx \sum_{k=0}^{N}{ \frac{ f^(k)(x_0) } { k! } ( x - x_0 )^k }
-    """
-
+function truncated_taylor_serie(x_0, x, f, n)
     h = x - x_0
-    y = 0
-    for i in range(N):
-        y += h**i / np.math.factorial(i) * f(x_0, i)
+    y = 0.0
+    for i = 0:n
+        y += h^i / factorial(i) * f(x_0, i)
+    end
     return y
-
-fig, ax = plt.subplots()
+end
 
 #
 x_0 = 0.0
 h = 1.0
 N = 100
-dh = h*6/5
-dx = h/5
+dh = h*6 / 5
+dx = h / 5
 
 #
-x = np.linspace(x_0 * 0.8, x_0 + h * 1.2, N)
-y = f(x)
-ax.plot(x, y, linewidth=2.0)
+x = range(x_0*0.8, x_0+h*1.2, length=N)
+y = f.(x)
+
+plot(x, y, label=L"$f(x)$")
 
 #
-x = np.linspace(x_0, x_0 + h, N)
+x = range(x_0, x_0 + h, N)
 
-for i, label in [
-    (1, r"$f_1(x) = f(x_0)$"), 
-    (2, r"$f_2(x) = f(x_0)+h f'(x_0)$"), 
-    (3, r"$f_3(x) = f(x_0)+h f'(x_0) + \frac{h^2}{2} f''(x_0)$"), 
-    #(4, "$f_4(x) = f(x_0)+h f'(x_0) + h^2 f''(x_0) + h^3 f'''(x_0)$")
-    ]:
-    y = truncated_taylor_serie(x_0, x=x, f=f, N=i)
-    ax.plot(x, y)
-    ax.text(x[-1] * 1.05, y[-1], label)
+plot!(x, truncated_taylor_serie.(x_0, x, f, 1), label=L"$f_1(x) = f(x_0)$")
+plot!(x, truncated_taylor_serie.(x_0, x, f, 2), label=L"$f_2(x) = f(x_0)+h f'(x_0)$")
+plot!(x, truncated_taylor_serie.(x_0, x, f, 3), label=L"$f_3(x) = f(x_0)+h f'(x_0) + \frac{h^2}{2} f''(x_0)$")
 
-ax.text(x_0, f(x_0) * 0.9, "$f(x_0)$")
-ax.text(x_0 + h * 1.05, f(x_0+h) * 1.05, "$f(x)$")
-ax.grid()
+xlabel!(L"x")
+ylabel!(L"y")
 ```
 
 L'erreur peut être évaluée en la regroupant dans un terme d'ordre supérieur.
@@ -201,40 +188,39 @@ $$ {#eq-taylor-centered-deriv}
 
 Nous pouvons tracer l'erreur de l'approximation en fonction du pas de discrétisation. Cette représentation permet de visualiser l'ordre de l'approximation. En effet, l'ordre de l'approximation se traduit dans la pente de cette erreur. De plus, nous pouvons conparer relativement les différentes approximations en comparant leurs erreurs. Par exemple dans la figure suivante, nous représentons l'erreur relative $|\tilde{f'} - f'| / |f'|$ où $\tilde{f'}$ est la valeur arrondie de la dérivée de $f$ notée $f'$. Cette courbe d'erreur est obtenue en évaluant l'erreur en $x=0.5$ de la fonction $f$ précédemment utilisée en exemple. Cette erreur est tracée pour les trois formulations de l'approximation de la dérivée de $f$.
 
-```{python}
+```{julia}
 #| label: fig-func-approx-taylor-error
 #| fig-cap: "Représentation de l'erreur d'approximation de la dériée par troncture de la série de Taylor."
 
-def dev_estimation_error(x: float, h: float):
-    f_p = f(x + h)
-    f_0 = f(x)
-    f_m = f(x - h)
+using Plots
 
-    forward = (f_p - f_0) / h
-    backward = (f_0 - f_m) / h
-    central = (f_p - f_m) / (2 * h)
+function dev_estimation_error(x, h)
+    f_p = @. f(x + h)
+    f_0 = f(x)
+    f_m = @. f(x - h)
+
+    forward = @. (f_p - f_0) / h
+    backward = @. (f_0 - f_m) / h
+    central = @. (f_p - f_m) / (2 * h)
 
     f_prim = f(x, 1)
 
     return (
-        abs(forward - f_prim) / abs(f_prim),
-        abs(backward - f_prim) / abs(f_prim),
-        abs(central - f_prim) / abs(f_prim),
+        abs.(forward .- f_prim) / abs(f_prim),
+        abs.(backward .- f_prim) / abs(f_prim),
+        abs.(central .- f_prim) / abs(f_prim),
     )
+end
 
-
-x: float = 0.5
-h = np.logspace(-2, 0, 100)
+x = 0.5
+h = 10.0.^range(-2.0, 0.0, length=100)
 forward, backward, centred = dev_estimation_error(x, h)
 
-fig, ax = plt.subplots()
-ax.loglog(h, forward, label="Forward")
-ax.loglog(h, backward, label="Backward")
-ax.loglog(h, centred, label="Centred")
-ax.legend()
-ax.set_xlabel("h")
-ax.set_ylabel(r"err")
-ax.grid()
+plot(h, [forward, backward, centred], label=["Forward" "Backward" "Centred"], legend=:bottomright)
+plot!(xaxis=:log10, yaxis=:log10)
+
+xlabel!(L"h")
+ylabel!(L"error$\frac{|\hat{f}|}{}$")
 ```
 
 Nous constatons bien que l'approximation par une différence finie centré (c'est le nom donné à l'approximation centrée) a une pente de 2, contrairement aux deux autres qui ont une pente de 1. Cette pente, ou l'ordre d'approximation, dit que, si nous divisons par deux le pas $h$, alors l'erreur est divisée par quatre. 
@@ -257,21 +243,18 @@ Nous constatons d'une part que l'erreur de troncature est proportionnelle au car
 
 Sur la figure suivante, est tracée l'erreur totale numérique sur l'estimation de la dérivée pour la fonction $f$ précédemment définie.
 
-```{python}
+```{julia}
 #| label: fig-taylor-deriv-totao-error
 #| fig-cap: "Représentation de l'erreur numerique total d'approximation de la dériée par troncture de la série de Taylor."
 
-h = np.logspace(-20, 0, 1000)
+x = 0.5
+h = 10.0.^range(-20.0, 0.0, length=1000)
 forward, backward, centred = dev_estimation_error(x, h)
 
-fig, ax = plt.subplots()
-ax.loglog(h, forward, label="Forward")
-ax.loglog(h, backward, label="Backward")
-ax.loglog(h, centred, label="Centred")
-ax.legend()
-ax.set_xlabel("h")
-ax.set_ylabel("err")
-ax.grid()
+plot(h, [forward, backward, centred], label=["Forward" "Backward" "Centred"], legend=:bottomright)
+plot!(xaxis=:log10, yaxis=:log10)
+xlabel!(L"h")
+ylabel!(L"error$\frac{|\hat{f}|}{}$")
 ```
 
 L'erreur de troncature croît avec le pas de discrétisation et l'erreur d'arrondi décroît avec le pas de discrétisation. Ce résultat est un peu en opposition avec l'idée reçue que : 
@@ -356,11 +339,13 @@ En définitive, plus le conditionnement est petit, moins l'erreur se propage et 
 
 L'évaluation du conditionnement d'une matrice est aujourd'hui simple de mise en oeuvre car disponible dans les biliothèques scientifiques.
 
-```{python}
+```{julia}
 #| code-fold: False
-import numpy.linalg as lg
 
-A = np.array(((1.01, 0.99), (0.99, 1.01)))
-print("Cond(A)=%g" % lg.cond(A))
+using LinearAlgebra
+using Printf
+
+A = [1.01 0.99 ; 0.99 1.01]
+@printf("Cond(A)=%g", cond(A))
 ```
 

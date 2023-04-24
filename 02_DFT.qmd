@@ -1,5 +1,5 @@
 ---
-jupyter: python3
+jupyter: julia-1.8
 ---
 
 ## Transformée de Fourier
@@ -69,18 +69,15 @@ Il existe de nombreuses implémentations de la transformée de Fourier discrète
 
 La section de code ci-dessous est une implémentation brute force de la DFT. Nous remarquerons que la transformée de Fourier discrète peut s'écrire comme le produit d'une matrice d'exponentielle aussi nommée matrice DFT telle que $\boldsymbol{W} = \left( w^{nk} \right)_{n,k = 0, \dots, N-1}$ avec $w=e^{-2 \pi j / N}$ est le vecteur des echantillons temporels. 
 
-```{python}
+```{julia}
 #| code-fold: False
-
-import numpy as np
-
-def dft(a):
-    "Brut force DFT"
-    N = len(a)
-    n = np.arange(N)
-    k = n.reshape((N, 1))
-    w = np.exp(-2j * np.pi * k * n / N)
-    return np.dot(w, a)
+function dft(a)
+    N = length(a)
+    k = 0.0:N-1
+    n = transpose(k)
+    w = exp.(-2im * pi * k * n / N)
+    return w * a
+end;
 ```
 
 Cependant il est préférable d'utiliser une des nombreuses implémentations de la FFT.
@@ -105,46 +102,41 @@ Avec $*$ le produit de convolution.
 
 Dans cette exemple, nous echantillonnons la fonction $x$ sur l'intervalle $[0, 1]$ second avec 1000 points, soit un echantillon tous les $T_e=1ms$.
 
-```{python}
+```{julia}
 #| label: fig-dft-sin-amorti
 #| fig-cap: "Représentation de la transformée de Fourier analytique et discrète d'une fonction sinus amortie."
 
-import numpy as np
-import matplotlib.pyplot as plt
+using FFTW
+using Plots
+using LaTeXStrings
 
-from numpy.fft import rfft, rfftfreq, fftshift
-%matplotlib inline
-
-sr = 2000 # sampling rate
+sr = 200 # sampling rate
 ts = 1.0 / sr # time step
-t = np.arange(0, 1, ts)
+t = 0.0:ts:1.0
 
-f_c = 10
+f_c = 10.0
 tau = 0.1
-x = np.sin(2 * np.pi * 10 * t) * np.exp(- t / 0.1)
+x = @. sin(2 * pi * 10.0 * t) * exp(- t / 0.1)
 
 X = rfft(x) * ts
-f = rfftfreq(len(x), ts)
+freq = rfftfreq(length(x), sr)
 
-Fx = tau/(2j) * (
-    1 / (1 - 2j * np.pi * tau * (f - f_c)) - 
-    1 / (1 - 2j * np.pi * tau * (f + f_c))
-)
+X2 = dft(x) * ts
 
-fig, (ax_time, ax_freq) = plt.subplots(2)
+Fx = @. (tau  / 2.0im) * (1 / (1 - 2im * pi * tau * (freq - f_c)) - 1 / (1 - 2im * pi * tau * (freq + f_c)))
 
-ax_time.plot(t, x, 'r')
-ax_time.set_ylabel('x')
-ax_time.set_xlabel("Time")
-ax_time.grid()
+plt_time = plot(t, x, label=L"$x$")
+ylabel!(L"$x$")
+xlabel!(L"Time $s$")
 
-ax_freq.plot(f, np.abs(Fx), label="$\mathcal{F}(x)$", marker="*")
-ax_freq.plot(f, np.abs(X), label="FFT")
-ax_freq.legend()
-ax_freq.set_ylabel('$| X |$')
-ax_freq.set_xlabel("Frequencies $Hz$")
-ax_freq.set_xlim(left=0, right=50)
-ax_freq.grid()
+plt_freq = plot(freq, abs.(Fx), label=L"$\mathcal{F}(x)$", marker=:+)
+plot!(freq, abs.(X), label="FFT")
+plot!(freq, abs.(X2[begin:length(freq)]), label="DFT")
+ylabel!(L"$|X|$")
+xlabel!(L"Frequencies $Hz$")
+xlims!(0, 50)
+
+plot(plt_time, plt_freq, layout=(2, 1))
 ```
 
 Dans cette exemple, la FFT se superpose à la transformée de Fourier discrétisée ($\mathcal{F}(x)$). 
@@ -179,32 +171,34 @@ $$ {#eq-dft_error}
 
 où $T_e$ est l'échantillonnage. On dit que l'erreur est en $\mathcal{O}(T_e^2)$ (souvent notée $\mathcal{O}(h^2)$). Si le pas de temps est divisé par deux, l'erreur est divisée par quatre (à durée totale constante).
 
-Cette transformée de Fourier discrète est implémentée dans le module python Smux (module compagnon), dont l'usage est illustré sur le même exemple que celui utilisé pour illustrer la FFT.
+Cette transformée de Fourier en temps discrète est implémentée si desous, dont l'usage est illustré sur le même exemple que celui utilisé pour illustrer la FFT.
 
-```{python}
+```{julia}
+#| code-fold: False
+function dtft(a, x, y, ker=2pi)
+    @assert(length(a) == length(x))
+    dx = [x[begin+1] - x[begin]; 0.5 * (x[begin+2:end] - x[begin:end-2]); x[end] - x[end-1]]
+    e = dx' .* exp.(-1im * ker * y * x')
+    return e * a
+end;
+```
+
+```{julia}
 #| label: fig-dtft-sin-amorti
 #| fig-cap: "Représentation de la transformée de Fourier analytique et discrète 'généralisée' d'une fonction sinus amortie."
+X2 = dtft(x, t, freq)
 
-from smux.dft import dtft
+plt_time = plot(t, x, label=L"x")
+ylabel!(L"$x$")
+xlabel!(L"Time $s$")
 
-f2 = np.linspace(0, 50, 100)
-X2 = dtft(x, t, f)
+plt_freq = plot(freq, abs.(Fx), label=L"$\mathcal{F}(x)$", marker=:+)
+plot!(freq, abs.(X2), label="DTFT")
+ylabel!(L"$|X|$")
+xlabel!(L"Frequencies $Hz$")
+xlims!(0, 50)
 
-fig, (ax_time, ax_freq) = plt.subplots(2)
-
-ax_time.plot(t, x, 'r')
-ax_time.set_ylabel('x')
-ax_time.set_xlabel("Time")
-ax_time.grid()
-
-ax_freq.plot(f, np.abs(X), label='fft', marker="*")
-ax_freq.plot(f, np.abs(X2), label='dft')
-
-ax_freq.set_ylabel('$| X |$')
-ax_freq.set_xlabel("Frequencies $Hz$")
-ax_freq.set_xlim(left=0, right=50)
-ax_freq.legend()
-ax_freq.grid()
+plot(plt_time, plt_freq, layout=(2, 1))
 ```
 
 ### Impact de la discrétisation du signal temporel
@@ -250,17 +244,13 @@ $$
 
 Si nous prenons un $t_1=10$ (t fin) pour $N=50$, nous avons une fréquence d'échantillonnage de $f_e=5$. Nous constatons que nous avons bien une répétition périodique tous les multiples de $f_e$.
 
-```{python}
+```{julia}
 #| label: fig-dft-discretisation
 #| fig-cap: "Illustration de la périodisation du spectre suite à la discrétisation en temps."
 
-from smux.functions import Gaussian, TimeShift
-
-fig, axs = plt.subplots(2, 2)
-
 # Plot parameters
 N = 100
-t_fin = 10
+t_fin = 10.0
 f_max = N / t_fin
 
 # Sampling
@@ -268,27 +258,26 @@ Ns = 50
 Te = t_fin / Ns
 fe = 1.0 / Te
 
-t = np.linspace(0, t_fin, N)
-t2 = np.linspace(0, t_fin, Ns)
-func = TimeShift(Gaussian(), tau=3)
-freq = np.linspace(-f_max, f_max, 2 * N)
+t = range(0.0, t_fin, N)
+tn = range(0.0, t_fin, Ns)
+f = range(-f_max, f_max, 2*N)
 
-axs[0, 0].plot(t, func(t), label="$x(t)$")
-axs[0, 0].legend()
+gauss(t) = @. exp(-(t-3.0)^2)
+gausstf(f) = @. √π * exp(-π^2 * f^2) * exp(-2im * π * f * tau)
 
-axs[0, 1].plot(freq, np.abs(func.ft(freq)), label="$X(f)$")
-axs[0, 1].legend()
+plt_time = plot(t, gauss(t), label=L"x(t)")
+plt_freq = plot(f, abs.(gausstf(f)), label=L"X(f)")
 
-x2 = func(t2)
-axs[1, 0].plot(t2, x2, "*", label="$x_n$")
-axs[1, 0].legend()
+xn = gauss(tn)
+plt_dtime = plot(tn, xn, label=L"x_n", seriestype=:scatter)
 
-X2 = dtft(x2, t2, freq)
-axs[1, 1].plot(freq, np.abs(X2), label="$X_n$")
-X_fft = rfft(x2) * t2[1]
-freq_fft = rfftfreq(len(t2), t2[1])
-axs[1, 1].plot(freq_fft, np.abs(X_fft), label="FFT")
-axs[1, 1].legend();
+plt_dft = plot(f, abs.(dtft(xn, tn, f)), label="DTFT")
+
+Xn = rfft(xn) * tn[begin+1]
+fn = rfftfreq(length(xn), 1/tn[begin+1])
+plt_dft = plot!(fn, abs.(Xn), label="FFT")
+
+plot(plt_time, plt_freq, plt_dtime, plt_dft, layout=(2, 2))
 ```
 
 En haut à gauche, nous avons un tracé de la gaussienne et à droite la transformée de Fourrier. En bas, nous avons la discrétisation temporelle ainsi que la transformée de Fourier discrète associée ainsi que la FFT.
@@ -355,42 +344,43 @@ $$
 
 Dans le domaine fréquentiel, nous représentons la FFT ainsi que la DFT avec un grand nombre de points de fréquence.
 
-```{python}
+```{julia}
 #| label: fig-dft-win
 #| fig-cap: "Illustration du fenetrage en temps sur la transformé de Fourier discréte."
 
 sr = 2000 # sampling rate
 ts = 1.0 / sr # time step
-t = np.arange(0, 1, ts)
+t = 0.0:ts:1.0
 
-x = np.zeros_like(t)
+x = zeros(eltype(t), length(t))
 
-ampl_freq = list(zip((0.3, 1, 0.7), (2, 5, 7)))
+ampl_freq = zip([0.3, 1.0, 0.7], [2.0, 5.0, 7.0])
 
-for a, f_c in ampl_freq:
-    x += a * np.sin(2*np.pi*f_c*t)
+for (a, fc) in ampl_freq
+    @. x += a * sin(2 * pi * fc * t)
+end
 
 f_max = 10
-f = np.linspace(0, f_max, 300)
+f = range(0.0, f_max, 300)
 X = dtft(x, t, f)
 
-Y = rfft(x) * t[1]
-f_fft = rfftfreq(len(x), t[1])
+Y = rfft(x) * t[begin+1]
+f_fft = rfftfreq(length(x), 1/t[begin+1])
 
-fig, (ax_time, ax_freq) = plt.subplots(2)
+# Xn = rfft(xn) * tn[begin+1]
+# fn = rfftfreq(length(xn), 1/tn[begin+1])
 
-ax_time.plot(t, x, 'r')
-ax_time.set_ylabel('x')
-ax_time.set_xlabel("Time")
-ax_time.grid()
+plt_time = plot(t, x, label=L"0.3 \sin(2\pi 2t) + \sin(2\pi 5t) + 0.7 \sin(2\pi 7t)")
+ylabel!(L"x")
+xlabel!("Time")
 
-ax_freq.plot(f, np.abs(X), label="DFT")
-ax_freq.stem(f_fft, np.abs(Y), "b", label="FFT", markerfmt=".", basefmt="-b")
-ax_freq.legend()
-ax_freq.set_ylabel('$| X |$')
-ax_freq.set_xlabel("Frequencies $Hz$")
-ax_freq.set_xlim(left=0, right=f_max)
-ax_freq.grid()
+plt_freq = plot(f, abs.(X), label="DFT")
+plot!(f_fft, abs.(Y), label="FFT", line=:stem, marker=:+)
+ylabel!(L"| X |")
+xlabel!(L"Frequencies $Hz$")
+xlims!(0, f_max)
+
+plot(plt_time, plt_freq, layout=(2, 1))
 ```
 
 Le résultat est surprenant. Premièrement, nous retrouvons bien le sinus cardinal, en réalité nous avons la sommation de trois sinux cardinaux. En effet, le signal est une sommation de trois sinus. La transformée de Fourier est donc : $\mathcal{F}(x) = \delta(f - 2) + \delta(f - 5) + \delta(f - 7)$. Nous sommes ici dans les conditions où la périodicité du spectre introduite par la discrétisation n'a pas d'impact (pas de recouvrement de spectre et les fréquences observées sont inférieures à $f_e$). De plus, nous ne regardons que le module de la transformée de Fourier. Nous pouvons donc simplifier l'expression précédente (@eq-dft_win) pour ce cas particulier par :
@@ -407,17 +397,17 @@ $$
 
 La figure suivante illustre les trois sinus cardinaux.
 
-```{python}
-fig, ax_freq = plt.subplots()
 
-ax_freq.plot(f, np.abs(X), label="DFT")
-for a, f_c in ampl_freq:
-    ax_freq.plot(f, 0.5 * a * np.sinc(f - f_c), label="$%g  \cdot sinc(\pi T_0 (f - %g))$" % (a/2, f_c))
-ax_freq.legend()
-ax_freq.set_ylabel('$| X |$')
-ax_freq.set_xlabel("Frequencies $Hz$")
-ax_freq.set_xlim(left=0, right=f_max)
-ax_freq.grid()
+```{julia}
+plt = plot(f, abs.(X), label="DFT")
+
+for (a, fc) in ampl_freq
+    plot!(f, 0.5 .* a .* sinc.(f .- fc), label=L"%$(a/2) \cdot sinc(\pi T_0 (f - %$(fc)))")
+end
+
+ylabel!(L"| X |")
+xlabel!(L"Frequencies $Hz$")
+xlims!(0, f_max)
 ```
 
 Le deuxième point remarquable est que la FFT et la DTFT aux mêmes fréquences que la DFT, sont exactes. En effet, le sinus cardinal $sinc(\pi f T_0)$ a ces zeros pour les fréquences $f_k = k T_0 = k f_e / N$ pour $k \in \mathbb{Z}^*$. Nous retrouvons le choix de discrétisation fréquentielle utilisé dans la DFT @eq-dft_n qui lie la discrétisation temporelle et fréquentielle @eq-dft_def. Ainsi, l'interdépendance entre l'échantillonnage temporel et fréquentiel permet d'avoir une DFT exacte sous les conditions de support fini (et de périodicité). En définitive, ce choix qui d'une part, a le bon goût d'adimensionner la DTF, a surtout l'intérêt de faire un calcul exact, c'est-à-dire sans erreur au sens formel. Nous verrons dans le chapitre suivant qu'en pratique les conditions nécéssaires ne sont pas toujours réunies.
