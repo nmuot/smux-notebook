@@ -4,7 +4,7 @@ project:
 book:
   title: "Smux Cahier de Note"
   author: "Nathanaël MUOT"
-  date: "16/01/2023"
+  date: "04/25/2023"
   chapters:
     - index.qmd
     - prologue.qmd
@@ -12,7 +12,7 @@ book:
 #    - summary.qmd
     - 01_un_mode_finie.qmd
     - 02_DFT.qmd
-    - 03_DFT_pratique.qmd
+#    - 03_DFT_pratique.qmd
     - references.qmd
 
 bibliography: biblio/references.bib
@@ -21,8 +21,8 @@ format:
   html:
     theme: cosmo
     code-fold: true
-  pdf:
-    documentclass: scrreprt
+  # pdf:
+  #   documentclass: scrreprt
 
 
 

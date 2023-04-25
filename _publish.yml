@@ -1,0 +1,4 @@
+- source: project
+  quarto-pub:
+    - id: 43ae2369-d4b8-4590-8b52-d9d468407fb0
+      url: 'https://quartopub.com/sites/nmuot/smux-notebook'
