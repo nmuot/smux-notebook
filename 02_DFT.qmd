@@ -2,11 +2,11 @@
 jupyter: julia-1.8
 ---
 
-## Transformée de Fourier
+# Transformée de Fourier
 
 Il est difficile d'aborder le calcul numérique sans parler de transformée de Fourier (FT Fourier transform) ou plus précisément de transformée de Fourier discrète (DFT Discrete Fourier Transforme). Au delà des propriétés de la transformée de Fourier discrète, il est important de la considérer sous un angle de précision et d'erreur. Mais avant d'aborder ce point, revenons aux fondamentaux.
 
-### Définition de la transformée de Fourier discrète
+## Définition de la transformée de Fourier discrète
 
 La transformée de Fourier $\mathcal{F}$ d'une fonction $x(t)$ intégrable sur $\mathbb{R}$ que l'on note $\mathcal{F}(x(t)) = X(f)$ est définie par :
 
@@ -63,7 +63,7 @@ $$ {#eq-idft_def}
 
 il est à noter qu'il existe d'autres définitions qui jouent sur la valeur du noyau et sur un facteur multiplicatif. C'est une histoire de convention.
 
-### Implémentation de la DFT
+## Implémentation de la DFT
 
 Il existe de nombreuses implémentations de la transformée de Fourier discrète. En particulier, la Fast Fourier Transform qui permet de réduire la complexité du calcul. La transformée de fourier discrète naïve a pour complexité algorithmique $\mathcal{O}(N^2)$. La FFT ramène cette complexité algorithmique à $\mathcal{O}(N log(N))$ avec $N$ une puissance de 2. Dans le cas où le vecteur n'est pas en puissance de 2, le vecteur est agrandi par des valeurs nulles (0-padding). Nous n'entrerons pas plus dans les détails ici, il existe de nombreux ouvrages sur le sujet.
 
@@ -141,7 +141,7 @@ plot(plt_time, plt_freq, layout=(2, 1))
 
 Dans cette exemple, la FFT se superpose à la transformée de Fourier discrétisée ($\mathcal{F}(x)$). 
 
-### Transformée de Fourier discrète quelconque
+## Transformée de Fourier discrète quelconque
 
 Pour des raisons pratiques, nous allons également utiliser une autre implémentation de la DFT. Cette version alternative va nous permettre d'une part, d'illustrer un certain nombre de propriétés de la DFT. D'autre part, elle peut s'avérer pratique car prend en charge directement les unités physiques, mais surtout permet de décorréler l'échantillonnage temporel et fréquentiel. Pour le meilleur comme pour le pire ! 
 
@@ -201,7 +201,7 @@ xlims!(0, 50)
 plot(plt_time, plt_freq, layout=(2, 1))
 ```
 
-### Impact de la discrétisation du signal temporel
+## Impact de la discrétisation du signal temporel
 
 Nous avons vu que la première étape de notre développement a été de discrétiser la fonction intégrable $x(t) \to x(n / f_e)$. Au sens des distributions, pour obtenir le $n$-ème terme nous devons multiplier la fonction $x$ par la distribution de Dirac $\delta(t - n / f_e)$. Ainsi la distribution associée à la discrétisation de fréquence d'échantillonnage $f_e$ noté $x_e$, est donné par :
 $$
@@ -284,7 +284,7 @@ En haut à gauche, nous avons un tracé de la gaussienne et à droite la transfo
 
 Nous remarquons que la propriété de la transformée de Fourier discrète usuelle (FFT) est auto-consistante. C'est-à-dire que la fréquence maximum accessible par transformée de Fourier usuelle ($f_{max} = f_e/2 = 1/T_e/2$ ) evite des erreurs d'interprétation liée à la périodicité du spectre. En revanche, elle ne protège pas contre le recouvrement de spectre.
 
-### Impact de la troncature (fenêtrage)
+## Impact de la troncature (fenêtrage)
 
 La deuxième étape consiste à prendre une série finie de termes dans la somme. Au sens des distributions, faire cette troncature revient à multiplier la fonction par une fonction porte que nous noterons $\Pi_{T_0}$ avec $T_0 = N T_e$. 
 

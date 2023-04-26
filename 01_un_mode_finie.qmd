@@ -220,7 +220,7 @@ plot(h, [forward, backward, centred], label=["Forward" "Backward" "Centred"], le
 plot!(xaxis=:log10, yaxis=:log10)
 
 xlabel!(L"h")
-ylabel!(L"error$\frac{|\hat{f}|}{}$")
+ylabel!(L"error = ${|\hat{f} - f|}/{|f|}$")
 ```
 
 Nous constatons bien que l'approximation par une différence finie centré (c'est le nom donné à l'approximation centrée) a une pente de 2, contrairement aux deux autres qui ont une pente de 1. Cette pente, ou l'ordre d'approximation, dit que, si nous divisons par deux le pas $h$, alors l'erreur est divisée par quatre. 
@@ -254,7 +254,7 @@ forward, backward, centred = dev_estimation_error(x, h)
 plot(h, [forward, backward, centred], label=["Forward" "Backward" "Centred"], legend=:bottomright)
 plot!(xaxis=:log10, yaxis=:log10)
 xlabel!(L"h")
-ylabel!(L"error$\frac{|\hat{f}|}{}$")
+ylabel!(L"error = ${|\hat{f} - f|}/{|f|}$")
 ```
 
 L'erreur de troncature croît avec le pas de discrétisation et l'erreur d'arrondi décroît avec le pas de discrétisation. Ce résultat est un peu en opposition avec l'idée reçue que : 
