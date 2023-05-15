@@ -1,0 +1,60 @@
+
+# Algorithme et méthode numérique
+
+## L'ecurie
+
+Il y a 25 chevaux, quel est le nombre minimum de courses pour déterminer les trois chevaux les plus rapides ? Sachant que vous ne pouvez faire des courses au plus à 5 chevaux à la fois et que vous n'avez pas de chronomètre.
+
+Prenez le temps de la reflexion avant de poursuivre.
+
+Avant de rentrer dans le vif du sujet, voici une approche qui ne donne pas le bon résultat. J'espère que ce n'est pas celle que vous avez retenue.
+
+Nous commençons par faire cinq courses que nous numérotons de 1 à 5. Dans la suite, nous utiliserons le terme de groupe. Ce sont les lignes sur la figure ci-dessous. Puis nous ordonnons les chevaux dans chaque groupe en fonction de leurs résultats, du plus rapide au moins rapide. Ce sont les colonnes dans la figure suivante. En mathématique, on aime bien la notation $c_{ij}$ avec $i$ le numéro du groupe et $j$ le classement dans le groupe.
+
+<img src="images/ecurie_1.png" style="width:40%;fig-align:center" />
+
+Puis nous prenons les cinq vainqueurs de chaque groupe, c'est-à-dire les chevaux de la première colonne, que nous faisons concourir dans la sixième course. Nous retenons enfin les trois premiers chevaux de cette dernière course, qui ne sont pas forcément les trois plus rapide !
+
+Pourquoi cette approche n'est pas satisfaisante ? Pour répondre à cette question, considérons le cas où les trois chevaux les plus rapides sont tous dans le même groupe au départ. Dans ce cas de figure, la solution proposée n'aura retenu qu'un seul de ces chevaux dans le classement final. Cela n'est donc pas la bonne solution. Alors comment faire mieux ?
+
+Une solution que je qualifierais de brute, force serait de faire une sélection progressive. Nous commençons comme dans la première configuration par cinq courses de 5 chevaux que nous ordonnons convenablement. 
+
+<img src="images/ecurie_1.png" style="width:40%;fig-align:center" />
+
+Puis nous gardons en course que les trois premiers de chaque groupe, les autres retournent à l'écurie. Nous pouvons former trois groupes de cinq chevaux chacun que nous ordonnons comme précédemment.
+
+![](images/ecurie_2.png)
+
+Nous obtenons ainsi le 3×5 c'est-à-dire les 15 chevaux les plus rapides. Nous organisons maintenant trois courses pour déterminer les 3×3 plus rapides. 
+
+![](images/ecurie_3.png)
+
+Et ainsi de suite. 
+
+![](images/ecurie_4.png)
+
+![](images/ecurie_5.png)
+
+<img src="images/ecurie_6.png" style="width:40%;fig-align:center" />
+
+Nous avons ainsi réaliser 5+3+2+2+1 soit 13 courses pour determiner les 3 chevaux les plus rapides. 
+
+Il y a une solution plus économe pour trouver les trois chevaux les plus rapides. Pour cette solution, nous commençons par réaliser 5 courses de 5 chevaux. Comme dans la première, nous numérotons les chevaux en fonction de leur classement dans la course $c_{ij}$. $i$ Pour le numéro de la course de 1 à 5 et $j$ pour la position sur la ligne d'arrivée.
+
+Nous organisons maintenant une course entre les vainqueurs de chaque course, les $c_{i1}$. Quitte à renuméroter les chevaux, nous les ordonnons en fonction du resultat de la course des vainqueurs. C'est-à-dire que $j$ représente maintenant le résultat du cheval star du groupe (le plus rapide du groupe) dans la dernière course.
+
+<img src="images/ecurie_7.png" style="width:40%;fig-align:center" />
+
+A partir de cette étape, nous ne résonnerons plus à savoir quels sont les chevaux les plus rapides mais quels sont les chevaux les moins rapides et ne pouvant pas être plus rapide que les trois plus rapide. Par exemple, les chevaux qui ont fini au delà de la troisième position ($j>3$) dans la première course ont au moins trois chevaux plus rapide qu'eux. Nous pouvons les éliminer.
+
+<img src="images/ecurie_8.png" style="width:40%;fig-align:center" />
+
+De manière similaire, le cheval star du groupe qui a fini au delà de la troisième position ($c_{i1}$ avec $i>3$) a forcément trois chevaux plus rapide que lui. De plus, comme il est le cheval le plus rapide de son groupe, tous les chevaux de ce groupe ont forcément moins de trois chevaux plus rapide qu'eux. Nous pouvons donc éliminer tous les chevaux des groupes supérieurs à 3 ($i>3$).
+
+<img src="images/ecurie_9.png" style="width:40%;fig-align:center" />
+
+Nous pouvons être plus precis. Tous les chevaux dont le clasement $i+j>4$, ont au moins trois chevaux plus rapide qu'eux. Par exemple $c_{11} < c_{21} < c_{22} < c_{23}$, $c_{23}$ a bien au moins trois chevaux plus rapide que lui. Cette inégalité nous permet d'éliminer une grande partie des chevaux et recouvre les deux premiers cas particuliers. 
+
+<img src="images/ecurie_10.png" style="width:40%;fig-align:center" />
+
+Il ne reste dans la course plus que 6 chevaux. Nous savons par ailleurs que le cheval $c_{11}$ est le plus rapide de tous. Il ne nous reste plus qu'à identifier les deux autres chevaux. Pour se faire, nous organisons une course des 5 derniers candidats. Nous avons ainsi déterminé les 3 chevaux les plus rapides avec seulement 7 courses.

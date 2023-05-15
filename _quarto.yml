@@ -10,9 +10,14 @@ book:
     - prologue.qmd
     - intro.qmd
 #    - summary.qmd
-    - 01_un_mode_finie.qmd
-    - 02_DFT.qmd
-#    - 03_DFT_pratique.qmd
+    - part: num/index.qmd
+      chapters:
+        - num/01_un_mode_finie.qmd
+        - num/02_DFT.qmd
+        #- num/03_DFT_pratique.qmd
+    - part: interviews/index.qmd
+      chapters:
+        - interviews/algo_and_numerical.qmd
     - references.qmd
 
 bibliography: biblio/references.bib
