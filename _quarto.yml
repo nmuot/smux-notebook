@@ -6,6 +6,7 @@ book:
   author: "Nathanaël MUOT"
   date: "04/25/2023"
   chapters:
+    - README.md
     - index.qmd
     - prologue.qmd
     - intro.qmd
