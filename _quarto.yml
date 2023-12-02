@@ -16,6 +16,10 @@ book:
         - num/01_un_mode_finie.qmd
         - num/02_DFT.qmd
         #- num/03_DFT_pratique.qmd
+        - num/04_edp.qmd
+    - part: computer/index.qmd
+      chapters:
+        - computer/principes.qmd
     - part: interviews/index.qmd
       chapters:
         - interviews/algo_and_numerical.qmd

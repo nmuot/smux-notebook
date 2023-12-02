@@ -1,0 +1,348 @@
+---
+jupyter: python3
+---
+
+# Coder - les principes
+
+Il n'y a pas de bon logiciel sans de bonnes fondations et l'univers informatique, de sa courte existence, apprend encore et discute sur la ou les meilleures façons de développer une solution informatique. Y a-t-il seulement une approche universelle ? Cependant, il y a des pièges à éviter et des principes qui peuvent nous mettre sur la bonne voie.
+
+Dans ce chapitre, nous allons nous pencher sur un ensemble de principes qui peuvent nous aider. Mais comme tout principe, il n'y a pas de dogme (vérité indiscutable faisant l'objet d'une foi). Il faut donc prendre les mots dans cette perspective. Un ensemble de principes guide la réflexion face à un choix, de façon, à éviter sans garantie, les principaux pièges du développement informatique.
+
+De plus, pour comprendre la présentation future, il faut avoir en tête que ces principes sont présentés suivant une certaine orientation. Ils se placent sur la base de ma propre expérience, le calcul scientifique haute performance. Pour ne pas faire de favoritisme, plusieurs langages de programmation seront utilisés pour illustrer les propos.
+
+La littérature regorge de best-sellers, certains passent comme les modes, d'autres sont indémodables. Les principes énoncés ici sont la reformulation après digestion de ce que j'ai pu glaner au cours de mes lectures. Et peut-être le premier principe est de lire - lire le code des autres, lire ces synthèses, ces guides qui forgent notre expérience. 
+
+Le monde du développement informatique dispose d'un grand nombre d'acronymes pour aider les développeurs. En voici une liste non exhaustive :
+
+- KISS (keep it simple, stupid)
+- DRY (don’t repeat yourself)
+- Rasoir d'Ockham (les hypothèses suffisantes les plus simples doivent être préférées (il faut et il suffit))
+- Loi de Déméter (Principe de connaissance minimale)
+- SOLID (*S*ingle responsibility principle, *O*pen/closed principle, *L*iskov substitution principle, *I*nterface segregation principle, *D*ependency inversion principle)
+- E = mc2 (error = more code^2)
+- PEDCAK (Problem Exists Between Chair And Keyboard)
+- YAGNI (You Aren’t Gonna Need It)
+- Loi de Pareto ou principe du 80-20
+- Clean Code
+
+Bien que ces "principes" soient souvent de bons conseils, ils ont du mal à guider le développement logiciel. Voir parfois, ils nous conduisent dans des contradictions. Voici comment s'organise ma réflexion.
+
+## Simplifier l'interface utilisateur
+
+Que vous souhaitez proposer une interface de développement sécurisé ou fiable, l'une des meilleures chose à faire est de rendre l'interface "simple", la plus "simple" possible. Quelle soit une interface graphique (GUI), en ligne de commandes (CLI) ou logiciel (API), Les utilisateurs utilisent toujours le chemin de moindre résistance. Et c'est la définition de "simple", le chemin de moindre résistance pour atteindre l'objectif de l'utilisateur. Cette règle est vraie, l'utilisateur est soit l'utilisateur final, innocent des mécaniques sous-jacentes, soit un contributeur perdu dans l'empilement de couches logicielles et matérielles composant la solution. Si l'utilisateur rencontre la moindre résistance, il n'utilisera pas l'interface convenablement. Ainsi tous les efforts pour avoir un protocole sécurisé seront anéantis par un mauvais usage laissant ainsi les fenêtres grandes ouvertes. Tous les efforts déployés pour construire un édifice solide seront ébranlés par un usage partiel et incomplet.
+
+On est ici clairement dans un problème humain, et l'informatique est encore un problème humain. Il est important de ne pas perdre de vue que nous écrivons pour les machines, mais ce sont des humains qui nous lisent et utilisent notre travail.
+
+Il y a un ensemble de causes qui peuvent faire la différence. Prenons un ensemble d'exemples simples :
+
+```{python}
+#| code-fold: False
+#| eval: false
+#| echo: true
+def get_session(name, id, nameid=None):
+    """Find the session defines by the pair name and id or create a new session
+    unless the session's nameid will be provided. In this cas the session must
+    be recorded in the repository.
+    """
+
+
+session = get_session(session_name, session_id)
+```
+
+Dans cet exemple, il y a plusieurs choses qui ne vont pas, mais qui consoude toutes à la même chose : on ne comprend rien.
+
+1. Le nom de la fonction ne représente pas ce que fait la fonction. Vous me direz que s'il fallait trouver un nom à cette fonction qui traduise ce qu'elle fait, on pourrait presque reprendre le commentaire : ce qui n'est pas plus utile. 
+2. De plus, les concepts sont mal définis. Quelle est la différence entre `name`, `id` et `nameid`, allez savoir ? 
+3. La documentation est orientée sur les détails de l'implémentation de la fonction et pas sur l'usage de la fonction.
+4. Un nouveau concept est introduit le `repository` c'est quoi ? Comment le manipule-t-on, comment le crée-t-on ? Nous n'avons aucune façon de retrouver ce `repository`.
+
+Où est l'utilisateur ?
+
+Ce qui est dommageable ici, c'est que nous sommes concentrés sur ce que l'on fait et pas sur ce à quoi va servir la fonction. Nous devons nous focaliser sur l'usage de la fonction. Un exemple de question à se poser quand on fait le découpage d'une fonction, ou quand on nomme les fonctions, c'est : Le concept que je crée et le nom que je lui donne racontera-t-il une histoire quand il sera utilisé. Quand on va utiliser cette fonction, le code produit sera-t-il compréhensible ? Le code sera-t-il auto-descriptif ? Si l'utilisateur doit commenter le code pour comprendre ce que font les fonctions utilisées, c'est le monde à l'envers. Un bon code doit se lire sans commentaire. Nous devons nous focaliser sur l'usage et pas sur le comment ! Voici un exemple d'usage :
+
+```{python}
+#| code-fold: False
+#| eval: false
+#| echo: true
+session_uid = build_session_uid_from_identifiant(session_name, session_id)
+repository = get_default_repository()
+if repository.has_session(session_uid):
+    session = repository.get_session(session_uid)
+else:
+    session = repository.create_session(session_uid)
+```
+
+Dans ce deuxième exemple, nous n'avons presque pas besoin de la documentation pour comprendre le comportement. Certes nous avons plus de codes. À certains égards, nous allons peut-être avoir de la répétition de codes. Mais le code est clair, lisible. Dans un deuxième temps, si l'utilisateur l'estime utile, il pourra créer des fonctions d'aide spécifique à son usage, permettant d'éviter la répétition de codes. Avec cette nouvelle interface, nous avons :
+
+1. des noms de fonctions clairs, explicites et chaque fonction fait une chose et bien (en tout cas on l'espère) ;
+2. Les concepts sont autodéfinis, le `uid` est l'agrégation du `name` et de l'`id` est formé un identifiant unique. Si on veut en savoir plus, la documentation de la fonction `build_session_uid_from_identifiant` doit pouvoir nous en dire plus. 
+3. Nous n'avons pas besoin de documentation. Le premier point associé à un bon choix de nom de variable permet de comprendre en lisant.
+4. La notion de `repository` est explicite et nous pouvons étudier ce concept à partir de la documentation de la fonction `get_default_repository`.
+
+La principale difficulté pour avoir une interface utilisateur simple c'est qu'il faut se projeter dans l'usage de l'interface sur laquelle nous travaillons. Il faut nous projeter dans la tête de ceux qui vont utiliser l'interface. Lui proposer des concepts simples, atomiques qui rentrent dans sa tête. À cet égard, les approches TDD (Test driven development) et DDD (Document driven development) ont des choses utiles : les tests et la documentation sont écrits avant le code et idéalement par un tiers. Cette façon de faire nous oblige à nous poser la question de l'usage par l'utilisateur. Comment va-t-il ou doit-il utiliser l'interface via les tests unitaires et que doit-il comprendre ou savoir de l'interface via la documentation.
+
+## Ne faites pas de vos problèmes ceux de l'utilisateur
+
+Ce deuxième point est également très fréquent dans la définition des interfaces utilisateur. Le plus souvent, les concepteurs et développeurs sont plus axés sur la résolution de leurs problèmes que ceux des utilisateurs. C'est le quotidien ! C'est un biais bien naturel et difficile à combattre.  En fait, de nombreux concepteurs et développeurs semblent tout à fait disposés à faire porter leur travail sur les épaules de l'utilisateur. "La fonction fait son travail, gage à l'utilisateur de bien s'en servir !".
+
+Pour illustrer ce point particulier l'exemple de `std::move` du C++ me semble particulièrement illustratif. 
+
+```
+std::move is used to indicate that an object t may be "moved from," i.e. allowing the efficient transfer of resources from t to another object. 
+```
+
+Simple efficace n'est, sans entrer dans les détails de l'implémentation, ni de comprendre les concepts de `lvalue`, `rvalue` et généralisation comme `xvalue`, ni plus d'entrer dans des considérations sur les `constexpr` et encore moins dans la compréhension de syntaxe du type `&&` (`move( T&& t )`). 
+
+Nous n'avons pas à entrer dans tous les détails de l'implémentation pour comprendre que la fonction `move` prend un 'object' d'un certain endroit pour le mettre à un autre endroit et qu'à fortiori il n'est plus au point de départ. Nous n'avons pas besoin de copier ou dupliquer cet objet, il s'est déplacé.
+
+Voici l'exemple de la documentation qui ne laisse pas d'ambiguïté et nous ne sommes pas surpris le moins du monde du résultat. 
+
+```cpp
+#include <iomanip>
+#include <iostream>
+#include <string>
+#include <utility>
+#include <vector>
+ 
+int main()
+{
+    std::string str = "Salut";
+    std::vector<std::string> v;
+ 
+    // uses the push_back(const T&) overload, which means 
+    // we'll incur the cost of copying str
+    v.push_back(str);
+    std::cout << "After copy, str is " << std::quoted(str) << '\n';
+ 
+    // uses the rvalue reference push_back(T&&) overload, 
+    // which means no strings will be copied; instead, the contents
+    // of str will be moved into the vector. This is less
+    // expensive, but also means str might now be empty.
+    v.push_back(std::move(str));
+    std::cout << "After move, str is " << std::quoted(str) << '\n';
+ 
+    std::cout << "The contents of the vector are { " << std::quoted(v[0])
+              << ", " << std::quoted(v[1]) << " }\n";
+}
+```
+
+```
+After copy, str is "Salut"
+After move, str is ""
+The contents of the vector are { "Salut", "Salut" }
+```
+
+L'exemple suivant n'a pas heurté notre lecture à l'instruction suivante `v.push_back(std::move(str))` et pourtant elle a nécessité l'implémentation de la méthode `void push_back(value_type&& val)`. Bonne lecture à ceux qui veulent comprendre (cela reste une bonne lecture). Mais avec cet exemple, nous comprenons ce que veux dire que la complexité est pour l'implémentateur, pas pour l'utilisateur.
+
+Ne pas transférer les problèmes ou les difficultés à l'utilisateur dans la conception et la production d'une interface n'est pas une chose facile. Elle est plus délicate que la problématique de la simplexité et demande la mise en place de retours fréquents des utilisateurs et d'humilité, de beaucoup d'humilité. Les méthodes agiles peuvent aider pour le premier point, mais ne font pas tout. L'humilité pour se sortir du schéma stérile du conflit caricatural entre utilisateur (testeur, end user, etc) et producteur (développeur, concepteur, etc.) est essentiel. Pour vous aider, pensez au PEDCAK : et si la solution c'était vous ?
+
+## Clair avant d'être malin
+
+Une des batailles permanantes, quand on fait la conception d'une interface, est que nous devons nous battre contre nous-même. Souvenons-nous de la pyramide de Maslow, besoin d'appartenance et besoin de reconnaissance. Tout guick que nous sommes, nous voulons appartenir à un groupe, quel qu'il soit. Cette force irréfrénable nous conduit inévitablement à faire des choses stupides - c'est-à-dire à vouloir en faire trop. La deuxième voie de fait est que nous voulons être reconnus pour cela, alors nous faisons en sorte de le faire au centre de tout.
+
+L'objectif d'une interface n'est pas d'être "élégante", ou "pure". N'oublions jamais que l'élégance est un concept relatif et que la pureté d'un concept ne le rend pas pratique pour autant.
+
+La gestion des erreurs a souvent une place de choix au Panthéon des trucs malins. Nous avons un modèle métier plus ou moins simple et arborescent. Ce modèle a de nombreux usages, présentation à l'utilisateur, intéraction, construction et production d'un ou plusieurs résultats à travers un cheminement de transformation. Pendant ce processus, à un moment on se rend compte que le modèle de données n'est pas consistant. Que faire ? Nous inventons une mécanique ad'doc, utile, pratique, pour guider plus ou moins bien l'utilisateur vers le problème pour qu'il puisse le corriger.
+
+Pour illustrer l'importance d'être clair avant d'être malin, voici un exemple de code malin. Mais combien de temps faut-il pour comprendre ce qu'il fait. 
+
+```{python}
+#| code-fold: False
+test = [1, 2, 3, 4, 2, 2, 3, 1, 4, 4, 4]
+print(max(set(test), key = test.count))
+```
+
+Le but n'est pas de s'interdire d'être malin ou d'exploiter au mieux les capacités du langage de programmation. Mais il est important de rester clair. Il y a de nombreuses façons de rester malin en étant clair. Le plus simple est d'encapsuler l'intelligence dans une fonction bien nommée.
+
+```{python}
+#| code-fold: False
+
+def most_frequent_value(iterable):
+    return max(set(iterable), key = iterable.count)
+
+print(most_frequent_value(test))
+```
+
+Une section de code où nous sommes généralement le plus malin, concerne les conditions de branchement 
+
+```{python}
+#| code-fold: False
+
+number = 79
+if (number % 7 and (number % 5 or (number * 3) // 11 < 3) and (number // 3 + 1) % 2 != 0):
+    print("Correct answer")
+else:
+    print("Poor answer")
+```
+
+Pourquoi ne pas rendre la chose lisible ? Arrêtons de faire deux choses en même temps. une ligne, une opération.
+
+```{python}
+#| code-fold: False
+
+def is_valide_number(number):
+    "What is a valide number"
+    return number % 7 and (number % 5 or (number * 3) // 11 < 3) and (number // 3 + 1) % 2 != 0
+
+if is_valide_number(number):
+    print("Correct answer")
+else:
+    print("Poor answer")
+```
+
+Le truc à la mode c'est de bien mettre en évidence nos REGEX complexes pour montrer au monde combien nous sommes forts.
+
+```{python}
+#| code-fold: False
+import re
+value = "truc.absurde@betise.com"
+if not re.match("^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$", value):
+    raise Exception()
+```
+
+Vous avez bien evidemment compris ! Dans la vraie vie nous n'aurons pas le contenu de la variable juste avant le test.
+
+## Parler à des humains (pour être compris)
+
+Les langages de programmation sont la langue de la machine. Pas exactement ! Les langages informatiques sont les passerelles entre le mode des machines qui fonctionnent à la façon d'un automate simple ou plus précisément d'une machine à état, qui interprète des instructions et réalise des operations simples. Suivant l'architecture de Von Neumann, les instructions (le programme) et les données sont confondues dans la même zone de stockage, la mémoire et le programme sont tous deux décrits de façon discrète par les nombres binaires 0 et 1. Cela est très loin de notre langage naturel. Les compilateurs ou interpréteurs font le travail de traduction. La leçon de cette histoire est que le langage de programmation est fait pour être exécuté par des machines mais lu et écrit par des humains. Nous n'avons pas besoin de parler machine. Mais une force mystique nous oblige à essayer de parler comme les machines.
+
+Ecrivons du code comme nous écrivons une histoire, pas pour des machines, pas pour des développeurs, mais pour des humains.
+
+Pour donner un exemple, nous pouvons tout simplement discuter du choix des noms choisis pour les variables, les fonctions, les classes etc... Dans l'exemple, une variable nommée `d`, peut-être le diminutif de 'day', est choisie. Nous avons de la chance car il y a un commentaire. Cette variable représente une durée en jour. Le problème ici est que 10 lignes plus bas, nous ne savons plus forcément ce que représente la variable. Sachez, jeune développeur, que les problèmes de mémoire ne sont pas reservés au vieux. Dans 6 semaines, quand nous reviendrons pour ajouter une nouvelle fonctionnalité ou corriger un bug nous avons pu utiliser 300 fois la variable `d` (day, deb, date, deep, device, domain, ...). Il va falloir du temps à notre cerveau pour tout rebrancher correctement.
+
+```{python}
+#| code-fold: False
+d:int = 100 # elapsed time in days
+```
+
+Une façon est de rendre la variable auto-descriptive. Pas d'ambiguïté possible quand j'utilise `elapsed_time_in_days`, nous manipulons une durée en jour. En général, quand on ne précise pas l'unité, c'est que nous utilisons une unité du système international, ce qui a plusieurs intérêts. Quand on manipule des quantités de système international, nous obtenons une unité du système international. Cependant attention aux Inch, Galon, etc... Le deuxième avantage est que nous simplifions le nom des variables.
+
+```{python}
+#| code-fold: False
+elapsed_time_in_days:int = 100
+```
+
+L'approche précédente malgré les principales lacunes n'est pas totalement satisfaisante. De façon générale, on a tendance à trop utiliser les types de base `integer`, `float` et `string`. Le problème de ces types c'est qu'ils n'aident pas l'utilisateur, ce sont des concepts de la machine. Le nom d'une personne n'est pas une chaine de caractères. Par exemple, `C#` n'est pas un prénom valide en France (seul l'alphabet romain peut être utilisé et les seuls signes diacritiques admis sont les points, trémas, accents et cédilles, tels qu'ils sont souscrits ou suscrits aux voyelles et consonnes autorisées par la langue française). Si nous utilisons une chaine de caractère simple, à chaque nouvelle modification du prénom, on va devoir vérifier la validité. Comme le prénom est un membre de la classe personne, celui-ci se retrouve responsable de la cohérence du prénom. En quoi la classe personne doit avoir cette responsabilité qui peut dépendre de la nationalité ? Revenons à notre exemple, une durée négative ça vous parle ? Nous retombons sur le même problème. Dans ce cas précis, nous sommes souvent tentés de dire que si la valeur est négative c'est qu'il y a un problème. Dans ce cas, la variable a un double rôle. Elle contient une durée ou un code d'erreur (`elapsed_time_in_days_or_error_code`). Cela devient compliqué, c'est la raison pour laquelle il est préférable d'utiliser des types, structures, classes spécifiques. 
+
+```{python}
+#| code-fold: False
+from datetime import timedelta
+elapsed_time = timedelta(days=10)
+```
+
+Le reproche qui est souvent fait dans cette approche, c'est qu'elle peut être très coûteuse en ressource (temps et mémoire). Par exemple, imaginons un tableau d'un million d'intervalles. Crée 1 million de `timedelta` peut vite coûter cher. Mais pourquoi utiliser un type de "base" (tableau), utiliser un concept spécifique `TimeDeltaVector` avec une interface inspiré de `timedelta` pour ne pas complexifier le schéma mental de l'utilisateur ? Ce concept pourrait même être un proxy vert, une base de données.
+
+Ce qui est important c'est de garder à l'esprit que l'interface que nous produisons doit être pensé pour être lu et compris par des humains. Pour ça, il ne faut pas simplement utiliser des mots connus. Il faut que le programme fasse sens.
+
+Pour terminer sur ce point, quand on veut illustrer les difficultés que nous pouvons avoir en communication, on utilise parfois l'image suivant "Les mots sont comme des boites à chaussures, elle représente ce que chacun met dedans au fil de ces expériences personnelles. Ainsi chaque boite à chausssures est différente d'un individu à l'autre". Au final, réduire le langage informatique à trois boites `integer`, `float` et `string` pour mettre à peu près tout dedans est un peu réducteur. Alors, créons des mots (concept) plus riches, plus précis, mieux détourés.
+
+## Respecte les conventions et les paradigmes du langage de programmation
+
+Il est intéressant de considérer l'histoire des langages informatiques et en particulier leurs structurations pour s'éloigner de la machine et incorporer des paradigmes plus ou moins bien définis permettant aux humains de travailler avec plus de sérénité et de fiabilité. En voici une brève histoire :
+
+- 1954 assembleur, une simple alphabétisation du langage machine (registre, action élémentaire et hexadécimal au menu) ;
+- 1954 Fortan (mathematical FORmula TRANslating system) langage compilé domaine de prédilection le calcul scientifique ;
+- 1970 C langage compilé généraliste bas niveau (pointeur et son arythmétrie) ;
+- 1983 C++ langage compilé performant multi-paradigme (procédural, orienté objet et générique) ;
+- 1991 Python langage interprété dit facile à apprendre multi-paradigme (impératif, structuré, fonctionnel, et orienté objet) ;
+- 2009 Go langage compilé qui se veut facilité pour le développement de programmes à grande échelle, concurrent inspiré du C et Pascal ;
+- 2010 Rust langage compilé fiable, concurrent pratique et multi-paradigme (fonctionnel, modèle acteur, procédural, et orienté objet).
+
+Plus le temps passe, plus les langages évoluent en se structurant autour de paradigmes que nous appréhendons plus facilement. Puis il a apporté de la facilité (pour les développeurs), de la productivité et de la fiabilité (moins de prise de tête pour les développeurs) tout en conservant un bon niveau de performance (moins un sujet pour les developpeurs). Tout est fait dans le langage de programmation pour aider les développeurs. Le tout, filtré par le temps et la popularité des langages pour ne garder que les plus aptes à résoudre de vrai problème.
+
+Les paradigmes nous permettent de donner des noms à des concepts, à les formuler, et à les apprendre. Ils nous permettent de passer plus simplement d'un langage à un autre. Les principes de modélisation objet sont identiques en C++, Java, C# ...
+
+Enfin, l'apprentissage profond d'un langage nous permet de construire des points de repère, des mécaniques et réflexe pour notre cerveau. Nous libérons de la bande passante pour les dimensions métiers. Mais dans certaines circonstances, nous pouvons avoir envie d'étendre un langage ou de le hacker pour nous simplifier la vie. Si nous avons l'impression d'un gain de temps sur le momment, nous créons surtout de la dette technique, de la confusion. Il est important de ne jamais trahir les principes d'un langage ou d'une API.
+
+Par exemple, le perversion pourrait être de changer le comportement de fonction 'standard' d'un langage de programmation. Ainsi pour nous aider dans les phases de débuggage, nous pouvons avoir besoin d'utiliser des fonctions spécifiques pour allouer et libérer de la mémoire. D'un seul et d'un coup, tous les appels à ces fonctions sont surchargés. Quel gain de temps, vous me direz.
+
+```c
+#ifdef DEBUG
+# define malloc(x) my_debug_malloc(x, __FILE__, __LINE__)
+# define free(x)  my_debug_free(x, __FILE__, __LINE__)
+#endif
+```
+
+Le gros problème avec cette approche c'est que personne ne pensera à aller voir ce qu'il se cache derrière la fonction free qui produit un segfault incompréhensible en mode debug. Le bug va faire le tour de la boîte et entrer aux annales. Définir des fonctions ou macros avec la bonne convention avec un bon recherche / remplace (ou sed) est bien plus efficace. Premièrement, on utilise les conventions classiques du C pour définir les "namespace", c'est à dire que les fonctions et autres concepts ont un préfixe commun au projet pour clairement les identifier. Ainsi d'un seul coup d'oeil, nous pouvons détecter les incohérences d'utilisation. Deuxièmement on utilise un nommage explicite clair. En choisissant une fonction du nom `proj_malloc` et pas `proj_new`, nous faisons un contrat implicite avec l'utilisateur, qu'il peut confondre dans sa lecture `proj_malloc` et `malloc`. 
+
+```c
+int main() 
+{
+    int* array;
+    array = (int*)proj_malloc(10*sizeof(int));
+    proj_free(array);
+    return 0;
+}
+```
+
+L'approche entre les deux exemples est très différente. Dans le premier cas, nous trompons l'utilisateur par un truchement. Dans le second cas, nous rendons explicite la contextualisation sans lui demander un effort d'apprentissage supplémentaire.
+
+Une autre erreur que nous pouvons avoir est de transférer des paradigmes d'un certain langage dans un autre où, en général, il ne trouve pas bien sa place. Derrière l'initiative louable d'utiliser des paradigmes plus "puissants" pour des gains de performance, se cache souvent plusieurs biais. Premièrement, si l'on a besoin de paradigmes plus riches dans un langage bas niveau, on n'a pas forcément choisi le bon langage. Vous me direz que ce n'est peut-être pas vous qui avez fait ce choix. Le deuxième biais est qu'on a probablement crée un nouveau langage précisément parce que ces paradigmes étaient en contradiction avec le dit- langage et qu'au final il apporte plus de difficulté que de compréhension. Enfin, ce nouveau paradigme n'est peut-être pas forcément aussi largement partagé par les développeurs du langage. Nous allons donc grandement nuire à la maintenabilité du langage.
+
+Nous pouvons illustrer avec le concept d'itérator qu'on retrouve très largement dans les langages orientés objets.
+
+```c++
+int main()
+{
+    int v[] = {3, -4, 2, -8, 15, 267};
+    for (auto it : v)
+        printf("%d\n", it);
+    return 0;
+}
+```
+
+Une des façons d'introduire ce type de boucle pourrait être de construire une macro-naïve comme suit :
+
+```c
+#define FOR_EACH(first, last) for (; first != last; ++first)
+
+int main() 
+{
+    int v[] = {3, -4, 2, -8, 15, 267};
+    int *it = v;
+    FOR_EACH(it, v+6)
+        printf("%d\n", *it);
+    return 0;
+}
+```
+
+Le problème c'est que cette macro n'est pas très robuste. Elle nécessite de définir au préalable la variable d'itération et de correctement l'initialiser. Nais surtout, elle est difficile à appréhender par un utilisateur même expérimenté du C. 
+
+Nous devons nous efforcer de ne jamais piéger l'utilisateur en introduisant des chausse-trappes et des concepts étrangers. Les gains obtenus sont souvent faibles et peuvent être obtenus à l'identique avec des approches plus robustes. Mais surtout, la plus grosse perte est la dette technique et sur des projets de long terme, c'est capital.
+
+En définitive ne faisons pas des anti-paternes.
+
+## Ne sacrifiez jamais la clarté et la maintenabilité pour un gain de performance, mais n'abandonnez pas la performance 
+
+Ces dernières années poussées par les projets d'envergure et dans un souci d'une meilleure gestion technique des projets, des approches très structurantes ont vu le jour. Ces approches sont le signe d'une structuration du secteur du développement logiciel autrefois réservé à un sérail souvent perché et parfois hors sol vers une masse d'ingénieurs. Ces mouvances pourraient être résumées dans le paradigme "clean code". Cette approche a fait ses preuves, mais cache également un secret, la performance. Même en informatique "rien ne se perd, rien ne se crée, tout se transforme" les gains que nous pouvons faire d'un côté se traduisent souvent par des pertes de l'autre côté.
+
+Les approches clean code sont focalisées sur la clarté, la maintenabilité, sa capacité a évolué, etc. Et c'est bien tout le propos des précédents paragraphes. Mais une utilisation intensive et en particulier sans connaître le revers de la médaille, peut coûter cher. Attention, il ne s'agit pas d'un désavoeu, mais d'une ouverture d'esprit pour trouver le bon compromis.
+
+L'utilisation d'un polymorphisme à outrance avec un graphe de classe complexe peut avoir un coût important (dans tous les langages). À un moment, il faut bien que le run time trouve la bonne fonction à exécuter ! Mais si localement (dans la classe) elle peut donner une apparence de simplicité, elle peut vite devenir complexe à appréhender et se transforme progressivement en code spaghetti. C'est pour cela qu'il faut privilégier des graphes simples de classe. Pour ma part, je privilégie une classe abstract qui permet de définir le concept à l'utilisateur puis N implémentation à plat avec parfois un deuxième niveau d'héritage. 
+
+Pour ceux qui veulent poursuivre la réflexion, il y a le billet ("clean" code horrible performance)[https://www.computerenhance.com/p/clean-code-horrible-performance] où sur un exemple simple, une modélisation trop atomique, trop agnostique conduit à de mauvaises performances. À force de trop segmenter le code, le compilateur ne peut plus l'optimiser. Nous pouvons augmenté le nombre d'opérations pour un même résultat. Parfois, nous pouvons calculer plusieurs fois la même chose sans s'en rendre compte, car perdus au fond du code.
+
+Alors que fait-on ? "Keep Calm and ~~Carry On~~" be pragmatic. Il y a une règle empirique que l'on retrouve dans un grand nombre de processus : la règle du 20-80 ou la loi de Pareto. Ces règles dites de 20% des causes produisent 80% des conséquences. Autrement dit, 20% de votre code consomme 80% du temps de calcul (mémoire ...). Suite à une programmation dans les règles de l'art et une identification des causes qui produisent 80% des conséquences, nous pouvons nous pencher sur la construction d'une architecture maline, subtile, mais surtout performante si cela répond à l'attente utilisateur, à l'usage. Dans certaines circonstances extrêmes, nous pouvons prendre le contre-pied de toutes les règles précédemment énoncées. Dans cette zone franche, le maître mot est performance, subtilité, commentaire à outrance. Mais attention, cette zone doit être bien délimitée, identifiée et protégée par des barbelés. 
+
+Pour illustrer ce dernier point, je prendrai pour exemple le plus beau hack de l'informatique : le fast inverse square root de Quake III. Dans cette fonction, nous ne comprenons rien. On fait de la magie binaire et des mathématiques déguisées. 10 lignes de pur code noir dédiées à la performance. En effet le calcul de l'inverti de la racine carrée est une fonction essentielle du calcul graphique. Elle permet entre autres de calculer l'angle d'incidence et de réflexion de la lumière. Bref, essentiel pour faire un rendu 3D.
+
+```c
+float q_rsqrt(float number)
+{
+  long i;
+  float x2, y;
+  const float threehalfs = 1.5F;
+
+  x2 = number * 0.5F;
+  y  = number;
+  i  = * ( long * ) &y;                       // evil floating point bit level hacking
+  i  = 0x5f3759df - ( i >> 1 );               // what the fuck?
+  y  = * ( float * ) &i;
+  y  = y * ( threehalfs - ( x2 * y * y ) );   // 1st iteration
+  // y  = y * ( threehalfs - ( x2 * y * y ) );   // 2nd iteration, this can be removed
+
+  return y;
+}
+```
+
+Le développement de cette fonction obscure répond à un souci de performance. Sa mise au point a surement demandé de nombreuses heures de recherche et de mise au point. Mais également, la mise au point d'une fonction qui suit les conventions de codages claires (noms non ambigus avec name space à la C). Cela a surement demandé un travail de refactorisation important `x / sqrt(y)` -> `x * q_rsqrt(y)`. Notez comment la lecture du code est simple et la relecture de la merge request est simplifiée par le choix du nom. L'utilisateur n'a pas besoin de comprendre la magie noire pour faire un usage efficace de la fonction. On se demande comment on aurait pu faire plus simplement. Pouvons-nous en dire autant de nos codes ?
